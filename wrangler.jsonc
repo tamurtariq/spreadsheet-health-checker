@@ -1,12 +1,6 @@
 {
   "name": "spreadsheet-health-checker",
-  "main": "./dist/_worker.js",
   "compatibility_date": "2024-12-01",
-  "assets": {
-    "binding": "ASSETS",
-    "directory": "./dist/client",
-    "not_found_handling": "single-page-application"
-  },
   "d1_databases": [
     {
       "binding": "spreadsheet-health-checker",
