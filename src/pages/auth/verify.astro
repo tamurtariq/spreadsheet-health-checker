@@ -1,0 +1,93 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Verifying - Spreadsheet Health Checker">
+  <main class="main">
+    <div class="verify-container">
+      <div class="verify-card">
+        <div class="spinner"></div>
+        <h2>Verifying your login link...</h2>
+        <p>Please wait while we sign you in.</p>
+        <div id="error" class="error hidden"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      const token = new URLSearchParams(window.location.search).get('token');
+      const errorEl = document.getElementById('error');
+      
+      if (!token) {
+        showError('Invalid login link');
+        return;
+      }
+      
+      try {
+        const res = await fetch(`/api/auth/verify?token=${token}`, {
+          redirect: 'manual',
+          credentials: 'include',
+        });
+        
+        if (res.redirected || res.status === 302) {
+          window.location.href = '/dashboard';
+        } else {
+          const data = await res.json();
+          showError(data.error || 'Login failed');
+        }
+      } catch (err) {
+        showError('Network error. Please try again.');
+      }
+    });
+    
+    function showError(message: string) {
+      document.querySelector('.spinner')!.style.display = 'none';
+      document.querySelector('h2')!.textContent = 'Login Failed';
+      document.querySelector('p')!.textContent = '';
+      const errorEl = document.getElementById('error')!;
+      errorEl.textContent = message;
+      errorEl.classList.remove('hidden');
+    }
+  </script>
+
+  <style>
+    .main { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; background: #f9fafb; }
+    
+    .verify-container { width: 100%; max-width: 400px; }
+    
+    .verify-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+    
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    h2 { margin: 0 0 0.5rem; font-size: 1.25rem; color: #1f2937; }
+    p { margin: 0; color: #6b7280; }
+    
+    .error {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+    .error.hidden { display: none; }
+  </style>
+</Layout>

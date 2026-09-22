@@ -1,0 +1,238 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Dashboard - Spreadsheet Health Checker">
+  <main class="main">
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h1>Dashboard</h1>
+        <div class="user-menu">
+          <span id="user-email" class="user-email"></span>
+          <button id="logout-btn" class="logout-btn">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <section class="card subscription-card">
+        <h2>Subscription</h2>
+        <div class="tier-badge" id="tier-badge">Free</div>
+        <p id="subscription-status" class="status">Active</p>
+        <div class="limits" id="limits">
+          <div class="limit-item">
+            <span class="limit-label">Scans/month</span>
+            <span class="limit-value" id="scans-limit">3</span>
+          </div>
+          <div class="limit-item">
+            <span class="limit-label">Max file size</span>
+            <span class="limit-value" id="file-size-limit">5 MB</span>
+          </div>
+          <div class="limit-item">
+            <span class="limit-label">Diff checker</span>
+            <span class="limit-value" id="diff-checker">No</span>
+          </div>
+          <div class="limit-item">
+            <span class="limit-label">PDF export</span>
+            <span class="limit-value" id="pdf-export">No</span>
+          </div>
+        </div>
+        <button id="upgrade-btn" class="upgrade-btn">Upgrade to Pro</button>
+      </section>
+
+      <section class="card usage-card">
+        <h2>Usage This Month</h2>
+        <div class="usage-bar">
+          <div class="usage-fill" id="usage-fill" style="width: 0%"></div>
+        </div>
+        <div class="usage-stats">
+          <span id="scans-used">0</span> / <span id="scans-remaining">3</span> scans used
+        </div>
+        <p class="reset-info">Resets on the 1st of each month</p>
+      </section>
+
+      <section class="card analyzer-card">
+        <h2>Spreadsheet Analyzer</h2>
+        <p>Upload a spreadsheet to check its health</p>
+        <div id="analyzer-container"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    async function loadAuth() {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        const data = await res.json();
+        
+        if (!data.user) {
+          window.location.href = '/login';
+          return;
+        }
+        
+        document.getElementById('user-email')!.textContent = data.user.email;
+        document.getElementById('tier-badge')!.textContent = data.subscription.tier.charAt(0).toUpperCase() + data.subscription.tier.slice(1);
+        document.getElementById('subscription-status')!.textContent = data.subscription.status;
+        document.getElementById('scans-limit')!.textContent = data.limits.scansPerMonth === -1 ? 'Unlimited' : data.limits.scansPerMonth;
+        document.getElementById('file-size-limit')!.textContent = data.limits.maxFileSizeMB + ' MB';
+        document.getElementById('diff-checker')!.textContent = data.limits.diffChecker ? 'Yes' : 'No';
+        document.getElementById('pdf-export')!.textContent = data.limits.pdfExport ? 'Yes' : 'No';
+        
+        const used = data.usage.scansUsed;
+        const limit = data.limits.scansPerMonth;
+        const remaining = data.usage.scansRemaining;
+        
+        document.getElementById('scans-used')!.textContent = used;
+        document.getElementById('scans-remaining')!.textContent = limit === -1 ? 'Unlimited' : remaining;
+        
+        if (limit !== -1) {
+          const percent = (used / limit) * 100;
+          document.getElementById('usage-fill')!.style.width = Math.min(100, percent) + '%';
+        } else {
+          document.getElementById('usage-fill')!.style.width = '0%';
+          document.getElementById('usage-fill')!.style.background = 'linear-gradient(90deg, #22c55e, #16a34a)';
+        }
+        
+        if (data.subscription.tier === 'free') {
+          document.getElementById('upgrade-btn')!.style.display = 'block';
+        }
+        
+        loadAnalyzer(data.limits);
+      } catch (error) {
+        console.error('Auth load failed:', error);
+        window.location.href = '/login';
+      }
+    }
+    
+    function loadAnalyzer(limits: any) {
+      const container = document.getElementById('analyzer-container');
+      if (!container) return;
+      
+      import('../components/Analyzer.tsx').then(module => {
+        const Analyzer = module.default;
+        const root = document.createElement('div');
+        container.appendChild(root);
+        
+        if (window.React && window.ReactDOM) {
+          window.ReactDOM.createRoot(root).render(window.React.createElement(Analyzer, { maxFileSize: limits.maxFileSizeMB * 1024 * 1024 }));
+        }
+      });
+    }
+    
+    document.getElementById('logout-btn')!.addEventListener('click', async () => {
+      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      window.location.href = '/';
+    });
+    
+    document.getElementById('upgrade-btn')!.addEventListener('click', () => {
+      alert('Upgrade flow coming soon (Lemon Squeezy integration)');
+    });
+    
+    loadAuth();
+  </script>
+
+  <style>
+    .main { min-height: 100vh; }
+    
+    .dashboard-header {
+      background: #1f2937;
+      color: white;
+      padding: 1.5rem 2rem;
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .dashboard-header h1 { margin: 0; font-size: 1.5rem; }
+    
+    .user-menu { display: flex; align-items: center; gap: 1rem; }
+    .user-email { color: #9ca3af; font-size: 0.875rem; }
+    
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    
+    .dashboard-grid {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .card h2 { margin: 0 0 1rem; font-size: 1.125rem; color: #1f2937; }
+    
+    .tier-badge {
+      display: inline-block;
+      padding: 0.375rem 0.875rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tier-badge.free { background: #f3f4f6; color: #374151; }
+    .tier-badge.pro { background: #dbeafe; color: #1e40af; }
+    .tier-badge.team { background: #fef3c7; color: #92400e; }
+    
+    .status { color: #6b7280; font-size: 0.875rem; margin-bottom: 1rem; }
+    
+    .limits { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem; }
+    .limit-item { display: flex; flex-direction: column; gap: 0.25rem; }
+    .limit-label { font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; }
+    .limit-value { font-weight: 600; color: #1f2937; }
+    
+    .upgrade-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: none;
+    }
+    
+    .usage-bar {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    
+    .usage-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+    
+    .usage-stats { font-weight: 600; color: #1f2937; }
+    .reset-info { font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem; }
+    
+    @media (max-width: 768px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .header-content { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</Layout>

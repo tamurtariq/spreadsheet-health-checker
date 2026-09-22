@@ -7,6 +7,12 @@
       "database_id": "c46a815e-a8c0-4b4b-9657-837b0f3a365e"
     }
   ],
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "your-kv-namespace-id"
+    }
+  ],
   "observability": {
     "enabled": true
   }
