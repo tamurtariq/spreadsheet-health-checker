@@ -97,14 +97,14 @@ import Layout from '../layouts/Layout.astro';
           document.getElementById('upgrade-btn')!.style.display = 'block';
         }
         
-        loadAnalyzer(data.limits);
+        loadAnalyzer(data.limits, data.usage.scansUsed, data.usage.scansRemaining);
       } catch (error) {
         console.error('Auth load failed:', error);
         window.location.href = '/login';
       }
     }
     
-    function loadAnalyzer(limits: any) {
+    function loadAnalyzer(limits: any, scansUsed: number, scansRemaining: number) {
       const container = document.getElementById('analyzer-container');
       if (!container) return;
       
@@ -114,7 +114,12 @@ import Layout from '../layouts/Layout.astro';
         container.appendChild(root);
         
         if (window.React && window.ReactDOM) {
-          window.ReactDOM.createRoot(root).render(window.React.createElement(Analyzer, { maxFileSize: limits.maxFileSizeMB * 1024 * 1024 }));
+          window.ReactDOM.createRoot(root).render(window.React.createElement(Analyzer, { 
+            limits, 
+            scansUsed,
+            scansRemaining,
+            maxFileSize: limits.maxFileSizeMB * 1024 * 1024 
+          }));
         }
       });
     }

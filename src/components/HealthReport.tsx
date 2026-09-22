@@ -1,11 +1,17 @@
 import { useState, useMemo } from 'react';
 import type { HealthReport as HealthReportType, Finding } from '../lib/checks/types';
 import { sortFindings, filterFindings, exportFindingsCSV } from '../lib/engine';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import '../styles/components.css';
+
+interface TierLimits {
+  pdfExport: boolean;
+}
 
 interface HealthReportProps {
   report: HealthReportType;
   onNewAnalysis: () => void;
+  limits: TierLimits;
 }
 
 const SEVERITY_COLORS = {
@@ -135,6 +141,101 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
     link.click();
   };
 
+  const handleExportPDF = async () => {
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const pageSize = { width: 612, height: 792 };
+      let page = pdfDoc.addPage(pageSize);
+      const { width, height } = page.getSize();
+      const margin = 50;
+      let y = height - margin;
+      
+      const drawText = (text: string, x: number, y: number, fontSize = 10, bold = false, color = rgb(0, 0, 0)) => {
+        page.drawText(text, {
+          x,
+          y,
+          size: fontSize,
+          font: bold ? fontBold : font,
+          color,
+        });
+      };
+      
+      const checkSpace = (needed: number) => {
+        if (y - needed < margin) {
+          page = pdfDoc.addPage(pageSize);
+          y = height - margin;
+        }
+      };
+      
+      // Title
+      drawText(`Health Report: ${report.fileName}`, margin, y, 20, true);
+      y -= 30;
+      
+      // Score
+      drawText(`Score: ${report.score.score}/100 (Grade ${report.score.grade})`, margin, y, 14, true);
+      y -= 20;
+      
+      // Summary
+      drawText('Summary', margin, y, 12, true);
+      y -= 18;
+      drawText(`Sheets Analyzed: ${report.summary.sheetsAnalyzed}`, margin + 10, y, 10);
+      y -= 16;
+      drawText(`Total Cells: ${report.summary.totalCells.toLocaleString()}`, margin + 10, y, 10);
+      y -= 16;
+      drawText(`Formulas Found: ${report.summary.totalFormulas}`, margin + 10, y, 10);
+      y -= 16;
+      drawText(`Total Findings: ${report.findings.length}`, margin + 10, y, 10);
+      y -= 24;
+      
+      // Severity breakdown
+      drawText('Findings by Severity', margin, y, 12, true);
+      y -= 18;
+      Object.entries(severityCounts).forEach(([severity, count]) => {
+        if (count > 0) {
+          checkSpace(16);
+          drawText(`${severity.charAt(0).toUpperCase() + severity.slice(1)}: ${count}`, margin + 10, y, 10);
+          y -= 16;
+        }
+      });
+      y -= 16;
+      
+      // Findings
+      drawText('Detailed Findings', margin, y, 12, true);
+      y -= 18;
+      
+      filteredFindings.forEach((finding, index) => {
+        checkSpace(60);
+        drawText(`${index + 1}. ${finding.title}`, margin, y, 10, true);
+        y -= 14;
+        drawText(`Category: ${finding.category} | Severity: ${finding.severity} | Sheet: ${finding.sheet}`, margin + 10, y, 9);
+        y -= 13;
+        if (finding.location?.row !== undefined) {
+          drawText(`Location: Row ${finding.location.row + 1}, Col ${String.fromCharCode(65 + (finding.location.col || 0))}`, margin + 10, y, 9);
+          y -= 13;
+        }
+        drawText(finding.description, margin + 10, y, 9);
+        y -= 13;
+        if (finding.suggestion) {
+          drawText(`Suggestion: ${finding.suggestion}`, margin + 10, y, 9, false, rgb(0.3, 0.3, 0.3));
+          y -= 13;
+        }
+        y -= 8;
+      });
+      
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${report.fileName.replace(/\.[^.]+$/, '')}-health-report.pdf`;
+      link.click();
+    } catch (error) {
+      console.error('PDF export failed:', error);
+      alert('Failed to generate PDF');
+    }
+  };
+
   const severityCounts = useMemo(() => ({
     critical: report.findings.filter(f => f.severity === 'critical').length,
     high: report.findings.filter(f => f.severity === 'high').length,
@@ -241,6 +342,18 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
           </svg>
           Export Findings (CSV)
         </button>
+        {limits.pdfExport && (
+          <button className="export-btn pdf-btn" onClick={handleExportPDF}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+            Export Report (PDF)
+          </button>
+        )}
         <button className="new-analysis-btn" onClick={onNewAnalysis}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="12" y1="5" x2="12" y2="19" />

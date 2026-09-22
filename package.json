@@ -18,6 +18,7 @@
     "@types/react-dom": "^19.3.0",
     "astro": "^7.3.3",
     "papaparse": "^5.7.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "wrangler": "^4.136.2",
