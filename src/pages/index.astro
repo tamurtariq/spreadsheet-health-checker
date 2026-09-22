@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Analyzer from '../components/Analyzer.tsx';
+---
+
+<Layout title="Spreadsheet Health Checker">
+  <main class="main">
+    <header class="hero">
+      <div class="hero-content">
+        <h1>Spreadsheet Health Checker</h1>
+        <p class="tagline">Validate your spreadsheets for formula errors, data quality issues, and structural problems — 100% client-side, zero data upload.</p>
+        <div class="hero-badges">
+          <span class="badge">🔒 Privacy First</span>
+          <span class="badge">⚡ Instant Results</span>
+          <span class="badge">📊 CSV & Excel</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="features">
+      <div class="feature">
+        <div class="feature-icon">🔍</div>
+        <h3>Formula Validation</h3>
+        <p>Detects #REF!, #DIV/0!, #VALUE!, circular references, inconsistent formulas, and volatile functions.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📋</div>
+        <h3>Data Quality Checks</h3>
+        <p>Identifies mixed types, numbers stored as text, duplicate keys, whitespace anomalies, and blank clusters.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🏗️</div>
+        <h3>Structure Analysis</h3>
+        <p>Finds hidden rows/columns with data, oversized sheets, trailing empty rows/columns, and sparse data.</p>
+      </div>
+    </section>
+
+    <div class="analyzer-section">
+      <Analyzer client:load />
+    </div>
+  </main>
+
+  <style>
+    .main {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    
+    .tagline {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    
+    .hero-badges {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .badge {
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      backdrop-filter: blur(4px);
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .feature {
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .feature:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+    }
+    
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .feature h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+    }
+    
+    .feature p {
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    
+    .analyzer-section {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .tagline { font-size: 1rem; }
+      .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</Layout>
