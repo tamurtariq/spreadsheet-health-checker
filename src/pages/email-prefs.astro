@@ -1,0 +1,260 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Email Preferences - Spreadsheet Health Checker">
+  <main class="main">
+    <header class="dashboard-header">
+      <div class="header-content">
+        <h1>Email Preferences</h1>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <section class="card">
+        <h2>Weekly Digest</h2>
+        <p>Receive a weekly summary of your spreadsheet scans and findings.</p>
+        
+        <div class="preference-item">
+          <label class="toggle-label">
+            <input type="checkbox" id="digest-enabled" />
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Enable weekly digest emails</span>
+          </label>
+          <p class="preference-desc">Sent every Monday at 9 AM UTC</p>
+        </div>
+        
+        <div class="preference-item" id="digest-options" style="display: none;">
+          <label>
+            <span>Include finding summary</span>
+            <input type="checkbox" id="include-findings" checked />
+          </label>
+          <label>
+            <span>Include top issues</span>
+            <input type="checkbox" id="include-top-issues" checked />
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Test Email</h2>
+        <p>Send a test digest to verify your settings.</p>
+        <button id="test-email-btn" class="btn btn-secondary">Send Test Digest</button>
+        <div id="test-result" class="test-result hidden"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    async function loadPrefs() {
+      try {
+        const res = await fetch('/api/email/prefs', { credentials: 'include' });
+        const data = await res.json();
+        
+        if (data.prefs) {
+          document.getElementById('digest-enabled')!.checked = data.prefs.digestEnabled;
+          document.getElementById('include-findings')!.checked = data.prefs.includeFindings;
+          document.getElementById('include-top-issues')!.checked = data.prefs.includeTopIssues;
+          toggleOptions(data.prefs.digestEnabled);
+        }
+      } catch (error) {
+        console.error('Failed to load prefs:', error);
+      }
+    }
+    
+    function toggleOptions(enabled: boolean) {
+      document.getElementById('digest-options')!.style.display = enabled ? 'block' : 'none';
+    }
+    
+    document.getElementById('digest-enabled')!.addEventListener('change', (e) => {
+      toggleOptions((e.target as HTMLInputElement).checked);
+      savePrefs();
+    });
+    
+    ['include-findings', 'include-top-issues'].forEach(id => {
+      document.getElementById(id)!.addEventListener('change', savePrefs);
+    });
+    
+    async function savePrefs() {
+      const prefs = {
+        digestEnabled: document.getElementById('digest-enabled')!.checked,
+        includeFindings: document.getElementById('include-findings')!.checked,
+        includeTopIssues: document.getElementById('include-top-issues')!.checked,
+      };
+      
+      try {
+        await fetch('/api/email/prefs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(prefs),
+        });
+      } catch (error) {
+        console.error('Failed to save prefs:', error);
+      }
+    }
+    
+    document.getElementById('test-email-btn')!.addEventListener('click', async () => {
+      const btn = document.getElementById('test-email-btn') as HTMLButtonElement;
+      const result = document.getElementById('test-result')!;
+      
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      result.classList.add('hidden');
+      
+      try {
+        const res = await fetch('/api/email/digest', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          result.textContent = `Test digest sent to your email!`;
+          result.className = 'test-result success';
+        } else {
+          result.textContent = `Failed: ${data.error || 'Unknown error'}`;
+          result.className = 'test-result error';
+        }
+      } catch (error) {
+        result.textContent = `Network error: ${error.message}`;
+        result.className = 'test-result error';
+      }
+      
+      result.classList.remove('hidden');
+      btn.disabled = false;
+      btn.textContent = 'Send Test Digest';
+    });
+    
+    loadPrefs();
+  </script>
+
+  <style>
+    .main { min-height: 100vh; }
+    
+    .dashboard-header {
+      background: #1f2937;
+      color: white;
+      padding: 1.5rem 2rem;
+    }
+    
+    .header-content { max-width: 800px; margin: 0 auto; }
+    .dashboard-header h1 { margin: 0; font-size: 1.5rem; }
+    
+    .dashboard-grid {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .card h2 { margin: 0 0 0.5rem; font-size: 1.125rem; color: #1f2937; }
+    .card > p { color: #6b7280; margin-bottom: 1.5rem; }
+    
+    .preference-item { margin-bottom: 1.5rem; }
+    .preference-item:last-child { margin-bottom: 0; }
+    
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      font-size: 15px;
+      color: #1f2937;
+    }
+    
+    .toggle-label input { display: none; }
+    
+    .toggle-slider {
+      width: 48px;
+      height: 28px;
+      background-color: #e5e7eb;
+      border-radius: 14px;
+      position: relative;
+      transition: background-color 0.2s;
+    }
+    
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    
+    .toggle-label input:checked + .toggle-slider {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .toggle-label input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+    
+    .toggle-text { font-weight: 500; }
+    
+    .preference-desc { margin: 8px 0 0 2.5rem; font-size: 13px; color: #9ca3af; }
+    
+    .preference-item label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      font-size: 14px;
+      color: #374151;
+    }
+    
+    .preference-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #667eea;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+    }
+    .btn-secondary:hover:not(:disabled) { background: #e5e7eb; }
+    .btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    .test-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .test-result.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .test-result.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .test-result.hidden { display: none; }
+    
+    @media (max-width: 768px) {
+      .dashboard-header { text-align: center; }
+    }
+  </style>
+</Layout>

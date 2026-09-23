@@ -14,6 +14,13 @@
 			"remote": true
 		}
 	],
+	"vars": {
+		"FROM_EMAIL": "digest@yourdomain.com",
+		"FROM_NAME": "Spreadsheet Health Checker"
+	},
+	"triggers": {
+		"crons": ["0 9 * * 1"]
+	},
 	"observability": {
 		"enabled": true
 	}

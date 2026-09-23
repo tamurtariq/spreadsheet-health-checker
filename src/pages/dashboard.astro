@@ -9,6 +9,7 @@ import Layout from '../layouts/Layout.astro';
         <h1>Dashboard</h1>
         <div class="user-menu">
           <span id="user-email" class="user-email"></span>
+          <a href="/email-prefs" class="prefs-link">Email Preferences</a>
           <button id="logout-btn" class="logout-btn">Logout</button>
         </div>
       </div>
@@ -157,6 +158,14 @@ import Layout from '../layouts/Layout.astro';
     
     .user-menu { display: flex; align-items: center; gap: 1rem; }
     .user-email { color: #9ca3af; font-size: 0.875rem; }
+    
+    .prefs-link {
+      color: #93c5fd;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .prefs-link:hover { text-decoration: underline; }
     
     .logout-btn {
       background: #ef4444;
