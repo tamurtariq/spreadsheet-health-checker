@@ -1,5 +1,12 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+
+const posts = await getCollection('blog', ({ data }) => {
+  return data.pubDate <= new Date();
+});
+
+const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <Layout title="Blog - Spreadsheet Health Checker">
@@ -12,41 +19,19 @@ import Layout from '../../layouts/Layout.astro';
     </header>
 
     <section class="blog-grid">
-      <article class="blog-card">
-        <div class="blog-card-content">
-          <div class="blog-meta">
-            <time>Sep 20, 2026</time>
-            <span class="tags">Excel · Formula Errors · Validation</span>
+      {sortedPosts.map(post => (
+        <article class="blog-card">
+          <div class="blog-card-content">
+            <div class="blog-meta">
+              <time>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
+              <span class="tags">{post.data.tags.join(' · ')}</span>
+            </div>
+            <h2><a href={`/blog/${post.slug}`}>{post.data.title}</a></h2>
+            <p>{post.data.description}</p>
+            <a href={`/blog/${post.slug}`} class="read-more">Read more →</a>
           </div>
-          <h2><a href="/blog/excel-formula-errors">How to Find and Fix Excel Formula Errors Automatically</a></h2>
-          <p>Learn how to automatically detect #REF!, #DIV/0!, #VALUE!, circular references, and other common spreadsheet formula errors using automated tools.</p>
-          <a href="/blog/excel-formula-errors" class="read-more">Read more →</a>
-        </div>
-      </article>
-
-      <article class="blog-card">
-        <div class="blog-card-content">
-          <div class="blog-meta">
-            <time>Sep 18, 2026</time>
-            <span class="tags">Data Quality · Validation · Cleaning</span>
-          </div>
-          <h2><a href="/blog/data-quality-checks">Data Quality Checks Every Spreadsheet Needs</a></h2>
-          <p>Essential data quality validation techniques: mixed types, numbers stored as text, duplicate keys, whitespace anomalies, and blank clusters.</p>
-          <a href="/blog/data-quality-checks" class="read-more">Read more →</a>
-        </div>
-      </article>
-
-      <article class="blog-card">
-        <div class="blog-card-content">
-          <div class="blog-meta">
-            <time>Sep 15, 2026</time>
-            <span class="tags">Excel Diff · Version Comparison · Audit</span>
-          </div>
-          <h2><a href="/blog/comparing-spreadsheet-versions">How to Compare Two Excel Files and Spot Every Difference</a></h2>
-          <p>Step-by-step guide to comparing spreadsheet versions: cell-by-cell diff, formula changes, value changes, and automated comparison tools.</p>
-          <a href="/blog/comparing-spreadsheet-versions" class="read-more">Read more →</a>
-        </div>
-      </article>
+        </article>
+      ))}
     </section>
 
     <footer class="blog-footer">
