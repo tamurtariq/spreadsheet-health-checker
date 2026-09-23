@@ -1,0 +1,222 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Spreadsheet Health Checker vs SheetBrain">
+  <main class="main">
+    <header class="compare-header">
+      <div class="compare-header-content">
+        <h1>Spreadsheet Health Checker <span class="vs">vs</span> SheetBrain</h1>
+        <p class="tagline">Why teams switch from SheetBrain to our privacy-first, client-side spreadsheet validator</p>
+      </div>
+    </header>
+
+    <section class="quick-comparison">
+      <div class="comparison-table">
+        <div class="table-header">
+          <div class="col feature">Feature</div>
+          <div class="col us highlight">Spreadsheet Health Checker</div>
+          <div class="col them">SheetBrain</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Data Privacy</div>
+          <div class="col us"><strong>100% client-side</strong> — data never leaves browser</div>
+          <div class="col them">Uploads to cloud for processing</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">File Size Limit</div>
+          <div class="col us"><strong>50 MB</strong> (Pro), 5 MB (Free)</div>
+          <div class="col them">10 MB max</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Formula Error Detection</div>
+          <div class="col us"><strong>All types</strong> + circular refs + inconsistent formulas</div>
+          <div class="col them">Basic error detection</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Data Quality Checks</div>
+          <div class="col us"><strong>Mixed types, numbers-as-text, duplicates, whitespace</strong></div>
+          <div class="col them">Limited</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Structure Analysis</div>
+          <div class="col us"><strong>Hidden rows, oversized sheets, blank clusters</strong></div>
+          <div class="col them">Basic</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Diff Checker</div>
+          <div class="col us"><strong>Pro/Team</strong> — cell-by-cell with formula diff</div>
+          <div class="col them">Not available</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">PDF Export</div>
+          <div class="col us"><strong>Pro/Team</strong></div>
+          <div class="col them">Not available</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Pricing</div>
+          <div class="col us"><strong>Free tier + $9/mo Pro</strong></div>
+          <div class="col them">$15/mo minimum</div>
+        </div>
+        <div class="table-row">
+          <div class="col feature">Offline Capable</div>
+          <div class="col us"><strong>Yes</strong> (after initial load)</div>
+          <div class="col them">No</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detailed-comparison">
+      <h2>Detailed Comparison</h2>
+
+      <div class="comparison-grid">
+        <article class="comparison-card">
+          <h3>🔒 Privacy & Security</h3>
+          <p><strong>Spreadsheet Health Checker:</strong> All processing happens in your browser. Your spreadsheets never touch our servers. No data upload, no cloud processing, no retention.</p>
+          <p><strong>SheetBrain:</strong> Requires uploading files to their cloud infrastructure for analysis. Data passes through their servers.</p>
+        </article>
+
+        <article class="comparison-card">
+          <h3>⚡ Performance</h3>
+          <p><strong>Spreadsheet Health Checker:</strong> Web Workers for CSV (Papa Parse), optimized SheetJS for Excel. 50 MB files process in seconds. No network latency.</p>
+          <p><strong>SheetBrain:</strong> Limited by upload speed and server queue times. 10 MB cap restricts larger workbooks.</p>
+        </article>
+
+        <article class="comparison-card">
+          <h3>🔍 Detection Depth</h3>
+          <p><strong>Spreadsheet Health Checker:</strong> 30+ checks across formulas, data quality, and structure. Circular reference detection with full chain display. Inconsistent formula detection across rows.</p>
+          <p><strong>SheetBrain:</strong> Focuses primarily on formula errors. Limited data quality and structural checks.</p>
+        </article>
+
+        <article class="comparison-card">
+          <h3>📊 Reporting & Export</h3>
+          <p><strong>Spreadsheet Health Checker:</strong> Interactive HTML report with severity filters, search, CSV export, PDF export (Pro). 0-100 health score with letter grade.</p>
+          <p><strong>SheetBrain:</strong> Basic report view. Limited export options.</p>
+        </article>
+
+        <article class="comparison-card">
+          <h3>🔄 Diff Checker</h3>
+          <p><strong>Spreadsheet Health Checker (Pro/Team):</strong> Compare two versions cell-by-cell. Four change types: added, removed, changed, formula-changed. Filterable, exportable.</p>
+          <p><strong>SheetBrain:</strong> No version comparison feature.</p>
+        </article>
+
+        <article class="comparison-card">
+          <h3>💰 Value</h3>
+          <p><strong>Spreadsheet Health Checker:</strong> Free tier (3 scans/mo), Pro $9/mo unlimited, Team $29/mo (5 seats). 40% cheaper than SheetBrain.</p>
+          <p><strong>SheetBrain:</strong> Starts at $15/mo. No free tier.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Ready to Switch?</h2>
+      <p>Join teams who value privacy, performance, and comprehensive validation.</p>
+      <a href="/login" class="cta-btn">Start Free Analysis</a>
+    </section>
+  </main>
+
+  <style>
+    .main { min-height: 100vh; }
+    
+    .compare-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    
+    .compare-header-content { max-width: 800px; margin: 0 auto; }
+    .compare-header h1 { font-size: 2.5rem; margin: 0 0 1rem; }
+    .compare-header .vs { background: rgba(255,255,255,0.2); padding: 0 1rem; border-radius: 8px; }
+    .tagline { font-size: 1.125rem; opacity: 0.9; margin: 0; }
+    
+    .quick-comparison {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow-x: auto;
+    }
+    
+    .comparison-table {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .table-header {
+      display: grid;
+      grid-template-columns: 250px 1fr 1fr;
+      background: #1f2937;
+      color: white;
+      font-weight: 600;
+    }
+    
+    .col { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; }
+    .table-header .col { border-bottom: none; }
+    
+    .table-row { display: grid; grid-template-columns: 250px 1fr 1fr; }
+    .table-row:nth-child(even) .col { background: #f9fafb; }
+    
+    .col.feature { font-weight: 500; color: #374151; background: #f9fafb; }
+    .col.us.highlight { background: #f0fdf4; }
+    .col.us strong { color: #166534; }
+    
+    .detailed-comparison {
+      max-width: 1000px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    
+    .detailed-comparison h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; }
+    
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .comparison-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .comparison-card h3 { margin: 0 0 1rem; font-size: 1.125rem; color: #1f2937; }
+    .comparison-card p { margin: 0.75rem 0; color: #4b5563; line-height: 1.6; font-size: 0.9375rem; }
+    .comparison-card strong { color: #1f2937; }
+    
+    .cta-section {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: #1f2937; }
+    .cta-section p { color: #6b7280; margin: 0 0 2rem; font-size: 1.125rem; }
+    
+    .cta-btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.125rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+    
+    @media (max-width: 768px) {
+      .compare-header h1 { font-size: 1.75rem; }
+      .table-header, .table-row { grid-template-columns: 1fr; }
+      .col { border-right: none; }
+      .col.feature { border-bottom: none; }
+      .detailed-comparison { padding: 0 1rem; }
+      .comparison-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</Layout>

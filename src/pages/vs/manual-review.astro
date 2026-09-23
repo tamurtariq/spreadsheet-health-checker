@@ -1,0 +1,324 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Spreadsheet Health Checker vs Manual Review">
+  <main class="main">
+    <header class="compare-header">
+      <div class="compare-header-content">
+        <h1>Spreadsheet Health Checker <span class="vs">vs</span> Manual Review</h1>
+        <p class="tagline">Why automated validation beats hours of eyeballing cells — every time</p>
+      </div>
+    </header>
+
+    <section class="problem-section">
+      <h2>The Problem with Manual Review</h2>
+      <div class="problem-grid">
+        <article class="problem-card">
+          <div class="problem-icon">⏱️</div>
+          <h3>Time Consuming</h3>
+          <p>A 10,000-row spreadsheet takes <strong>4-8 hours</strong> to review manually. Our tool does it in <strong>under 10 seconds</strong>.</p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-icon">👁️</div>
+          <h3>Human Error</h3>
+          <p>Studies show reviewers miss <strong>30-50%</strong> of formula errors. Fatigue sets in after 30 minutes.</p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-icon">🔍</div>
+          <h3>Invisible Errors</h3>
+          <p>Hidden rows, white-on-white text, and off-screen columns are easily missed. Automated tools check every cell.</p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-icon">🔄</div>
+          <h3>No Regression Testing</h3>
+          <p>After fixes, manual re-review is rarely done. Automated checks run every time — catching regressions instantly.</p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-icon">📋</div>
+          <h3>Inconsistent Standards</h3>
+          <p>Different reviewers check different things. Our 30+ checks run the same way every time.</p>
+        </article>
+        <article class="problem-card">
+          <div class="problem-icon">📊</div>
+          <h3>No Audit Trail</h3>
+          <p>Manual reviews leave no evidence. Our reports export to CSV/PDF for compliance and audit trails.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="roi-section">
+      <h2>ROI Calculator</h2>
+      <div class="roi-grid">
+        <div class="roi-card">
+          <h3>Manual Review Cost</h3>
+          <ul>
+            <li>Senior analyst: $75/hr</li>
+            <li>10K rows = 6 hours avg</li>
+            <li><strong>$450 per review</strong></li>
+            <li>Monthly = <strong>$5,400</strong></li>
+          </ul>
+        </div>
+        <div class="roi-card highlight">
+          <h3>Automated Cost</h3>
+          <ul>
+            <li>Pro plan: $9/mo</li>
+            <li>Unlimited scans</li>
+            <li><strong>$9 per month</strong></li>
+            <li>Annual savings: <strong>$64,788</strong></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="what-you-miss">
+      <h2>What Manual Review Misses (That We Catch)</h2>
+      <div class="miss-grid">
+        <div class="miss-category">
+          <h3>Formula Errors</h3>
+          <ul>
+            <li>Circular references (entire chains)</li>
+            <li>Inconsistent formulas across rows</li>
+            <li>Volatile functions (INDIRECT, OFFSET)</li>
+            <li>Large range references (>10K cells)</li>
+            <li>All error types: #REF!, #DIV/0!, #VALUE!, #NAME?, #N/A, #NUM!, #NULL!, #CALC!, #SPILL!</li>
+          </ul>
+        </div>
+        <div class="miss-category">
+          <h3>Data Quality</h3>
+          <ul>
+            <li>Mixed types in single columns</li>
+            <li>Numbers stored as text (silent SUM killer)</li>
+            <li>Duplicate lookup keys</li>
+            <li>Leading/trailing/multiple spaces</li>
+            <li>Blank row/column clusters</li>
+          </ul>
+        </div>
+        <div class="miss-category">
+          <h3>Structure</h3>
+          <ul>
+            <li>Hidden rows/columns with data</li>
+            <li>Oversized sheets (>10K rows, >200 cols)</li>
+            <li>Trailing empty rows/columns</li>
+            <li>Empty header rows</li>
+            <li>Orphaned named ranges</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="workflow-section">
+      <h2>Workflow Comparison</h2>
+      <div class="workflow-comparison">
+        <div class="workflow-column">
+          <h3>Manual Review Process</h3>
+          <ol>
+            <li>Open workbook, scan tabs</li>
+            <li>Check each sheet for errors</li>
+            <li>Trace precedents/dependents</li>
+            <li>Verify formula consistency</li>
+            <li>Check data types column-by-column</li>
+            <li>Look for hidden data</li>
+            <li>Document findings in separate doc</li>
+            <li>Share with team, track fixes</li>
+            <li>Re-review after fixes</li>
+          </ol>
+          <div class="time-badge">4-8 hours</div>
+        </div>
+        <div class="workflow-column highlight">
+          <h3>Spreadsheet Health Checker</h3>
+          <ol>
+            <li>Drag & drop file</li>
+            <li>Click "Analyze"</li>
+            <li>Review prioritized findings</li>
+            <li>Export CSV/PDF for team</li>
+            <li>Fix issues</li>
+            <li>Re-run (seconds)</li>
+          </ol>
+          <div class="time-badge">30 seconds</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Stop Eyeballing. Start Validating.</h2>
+      <p>Free tier: 3 scans/month. Pro: $9/mo unlimited.</p>
+      <a href="/login" class="cta-btn">Try Free Analysis</a>
+    </section>
+  </main>
+
+  <style>
+    .main { min-height: 100vh; }
+    
+    .compare-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    
+    .compare-header-content { max-width: 800px; margin: 0 auto; }
+    .compare-header h1 { font-size: 2.5rem; margin: 0 0 1rem; }
+    .compare-header .vs { background: rgba(255,255,255,0.2); padding: 0 1rem; border-radius: 8px; }
+    .tagline { font-size: 1.125rem; opacity: 0.9; margin: 0; }
+    
+    .problem-section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    
+    .problem-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .problem-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    
+    .problem-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .problem-card h3 { margin: 0 0 0.75rem; font-size: 1.125rem; color: #1f2937; }
+    .problem-card p { margin: 0; color: #4b5563; line-height: 1.6; }
+    .problem-card strong { color: #ef4444; }
+    
+    .roi-section {
+      max-width: 1000px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    
+    .roi-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    
+    .roi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    
+    .roi-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    
+    .roi-card.highlight {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .roi-card h3 { margin: 0 0 1rem; font-size: 1.25rem; color: #1f2937; }
+    .roi-card ul { margin: 0; padding-left: 1.25rem; }
+    .roi-card li { margin: 0.5rem 0; color: #4b5563; }
+    .roi-card strong { color: #1f2937; font-size: 1.125rem; }
+    
+    .what-you-miss {
+      max-width: 1000px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    
+    .what-you-miss h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    
+    .miss-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .miss-category {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    
+    .miss-category h3 { margin: 0 0 1rem; font-size: 1.125rem; color: #1f2937; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb; }
+    .miss-category ul { margin: 0; padding-left: 1.25rem; }
+    .miss-category li { margin: 0.375rem 0; color: #4b5563; font-size: 0.9375rem; }
+    
+    .workflow-section {
+      max-width: 1000px;
+      margin: 0 auto 4rem;
+      padding: 0 2rem;
+    }
+    
+    .workflow-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    
+    .workflow-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    
+    .workflow-column {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    
+    .workflow-column.highlight {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+    
+    .workflow-column h3 { margin: 0 0 1.5rem; font-size: 1.25rem; color: #1f2937; }
+    .workflow-column ol { margin: 0; padding-left: 1.25rem; }
+    .workflow-column li { margin: 0.75rem 0; color: #4b5563; line-height: 1.5; }
+    
+    .time-badge {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+    
+    .workflow-column.highlight .time-badge {
+      background: #667eea;
+      color: white;
+    }
+    
+    .cta-section {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: #f9fafb;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: #1f2937; }
+    .cta-section p { color: #6b7280; margin: 0 0 2rem; font-size: 1.125rem; }
+    
+    .cta-btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1.125rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
+    
+    @media (max-width: 768px) {
+      .compare-header h1 { font-size: 1.75rem; }
+      .roi-grid { grid-template-columns: 1fr; }
+      .workflow-comparison { grid-template-columns: 1fr; }
+      .problem-section, .roi-section, .what-you-miss, .workflow-section { padding: 0 1rem; }
+    }
+  </style>
+</Layout>
