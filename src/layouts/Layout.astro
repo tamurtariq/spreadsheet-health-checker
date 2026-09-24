@@ -1,3 +1,6 @@
+---
+const isHome = Astro.url.pathname === '/';
+---
 <!doctype html>
 <html lang="en">
 	<head>
@@ -7,6 +10,7 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		{ isHome && <meta name="google-site-verification" content="lzgnJVpNBXxPeYzWCCJxUccV_8Znnw_Zry14PDS_jvg" /> }
 		<slot name="head" />
 	</head>
 	<body>
