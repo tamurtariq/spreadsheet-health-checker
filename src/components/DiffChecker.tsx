@@ -2,12 +2,13 @@ import { useState, useCallback } from 'react';
 import { parseFile } from '../lib/parser';
 import { diffFiles, formatDiffForDisplay } from '../lib/diff';
 import { useAuthContext } from '../lib/useAuthContext';
+import UpgradeModal from './UpgradeModal';
 import type { DiffResult, CellDiff, ParsedFile } from '../lib/parser';
 import '../styles/components.css';
 
 export default function DiffChecker() {
   const { limits } = useAuthContext();
-  const onUpgrade = () => alert('Upgrade flow coming soon');
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [file1, setFile1] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
   const [parsed1, setParsed1] = useState<ParsedFile | null>(null);
@@ -126,10 +127,11 @@ export default function DiffChecker() {
           </svg>
           <h3>Diff Checker - Pro Feature</h3>
           <p>Compare two spreadsheet versions side-by-side</p>
-          <button className="upgrade-btn" onClick={onUpgrade}>
+          <button className="upgrade-btn" onClick={() => setShowUpgradeModal(true)}>
             Upgrade to Pro to Unlock
           </button>
         </div>
+        <UpgradeModal open={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
       </div>
     );
   }

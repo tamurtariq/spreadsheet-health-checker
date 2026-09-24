@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import FileDropZone, { type FileDropZoneProgress } from './FileDropZone';
 import LeadCleanerReport from './LeadCleanerReport';
+import UpgradeModal from './UpgradeModal';
 import { useAuthContext } from '../lib/useAuthContext';
 import { parseFile } from '../lib/parser';
 import { cleanFile } from '../lib/cleaningEngine';
@@ -17,6 +18,7 @@ export default function LeadCleaner() {
   const { limits, scansRemaining, subscription } = useAuthContext();
   const [state, setState] = useState<CleaningState | null>(null);
   const [limitError, setLimitError] = useState<string | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const isPaid = subscription.tier === 'pro' || subscription.tier === 'team';
 
@@ -102,7 +104,7 @@ export default function LeadCleaner() {
           <p>You've used all {limits.scansPerMonth} scans for this month.</p>
           <p className="reset-info">Resets on the 1st of each month. Health Checker and Lead Cleaner share the same monthly allowance.</p>
           {limits.scansPerMonth !== -1 && (
-            <button className="upgrade-btn" onClick={() => alert('Upgrade flow coming soon')}>
+            <button className="upgrade-btn" onClick={() => setShowUpgradeModal(true)}>
               Upgrade to Pro for Unlimited Scans
             </button>
           )}
@@ -115,6 +117,8 @@ export default function LeadCleaner() {
           invalidExtensionMessage="Please upload a CSV or Excel (.xlsx/.xls) file"
         />
       )}
+
+      <UpgradeModal open={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
     </div>
   );
 }

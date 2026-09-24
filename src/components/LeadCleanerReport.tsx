@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { CleaningAction, CleaningActionType, CleaningResult, FieldRole } from '../lib/cleaning/types';
 import { exportCleanedCSV } from '../lib/cleaningEngine';
+import UpgradeModal from './UpgradeModal';
 import '../styles/components.css';
 
 interface LeadCleanerReportProps {
@@ -55,6 +56,7 @@ function ActionCard({ action }: { action: CleaningAction }) {
 
 export default function LeadCleanerReport({ result, fileName, isPaid, onOverrideRole, onNewCleaning }: LeadCleanerReportProps) {
   const [showAllActions, setShowAllActions] = useState(false);
+  const [upgradeModalMessage, setUpgradeModalMessage] = useState<string | null>(null);
 
   const visibleActions = useMemo(
     () => (showAllActions ? result.summary.actions : result.summary.actions.slice(0, ACTIONS_PREVIEW_LIMIT)),
@@ -110,7 +112,10 @@ export default function LeadCleanerReport({ result, fileName, isPaid, onOverride
       {!isPaid && (
         <div className="free-tier-notice">
           <strong>Free plan:</strong> email validation and whitespace trimming only.{' '}
-          <button className="upgrade-link" onClick={() => alert('Upgrade flow coming soon')}>
+          <button
+            className="upgrade-link"
+            onClick={() => setUpgradeModalMessage("We're finishing up billing so you can upgrade in-app. In the meantime, reach out and we'll get you set up directly.")}
+          >
             Upgrade to Pro
           </button>{' '}
           for deduplication, phone formatting, name/company standardization, and CSV export.
@@ -151,7 +156,10 @@ export default function LeadCleanerReport({ result, fileName, isPaid, onOverride
             Download Cleaned CSV
           </button>
         ) : (
-          <button className="export-btn" onClick={() => alert('Upgrade to Pro to export your cleaned file')}>
+          <button
+            className="export-btn"
+            onClick={() => setUpgradeModalMessage("Exporting your cleaned file is a Pro feature. We're finishing up billing so you can upgrade in-app - reach out in the meantime and we'll get you set up directly.")}
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
@@ -191,6 +199,12 @@ export default function LeadCleanerReport({ result, fileName, isPaid, onOverride
           </>
         )}
       </div>
+
+      <UpgradeModal
+        open={upgradeModalMessage !== null}
+        message={upgradeModalMessage ?? undefined}
+        onClose={() => setUpgradeModalMessage(null)}
+      />
     </div>
   );
 }

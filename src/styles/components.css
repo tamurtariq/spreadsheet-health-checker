@@ -734,3 +734,200 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/*
+ * Generic button classes. dashboard.astro's "Create Key" and "Invite
+ * Member" buttons already used class="btn btn-primary btn-sm" with no
+ * matching CSS anywhere in the project - they were rendering unstyled.
+ * ToolsNav.astro/index.astro/diff/index.astro each define their own
+ * theme-dependent .btn-primary/.btn-secondary scoped to their own file;
+ * this is the plain, light-background variant for pages like the
+ * dashboard that don't need a hero/dark variant.
+ */
+.btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #5a6fd6;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+/*
+ * Shared modal, used both by React (UpgradeModal.tsx) and vanilla-JS pages
+ * (dashboard.astro) so both contexts get identical, on-brand styling
+ * instead of native alert()/prompt()/confirm() dialogs.
+ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  color: #667eea;
+}
+
+.modal-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.modal-card p {
+  margin: 0 0 1.5rem;
+  color: #6b7280;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.modal-close-btn {
+  padding: 0.625rem 1.25rem;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Inline expandable forms + status messages, replacing prompt()/confirm()
+ * and alert() in dashboard.astro. */
+.inline-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.inline-form input,
+.inline-form select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.inline-form input {
+  flex: 1;
+  min-width: 150px;
+}
+
+.status-message {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+}
+
+.status-message.success {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-message.error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.key-reveal {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+}
+
+.key-reveal-warning {
+  font-size: 0.8125rem;
+  color: #166534;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.key-reveal-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.key-reveal-input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-family: monospace;
+  font-size: 0.8125rem;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  background: white;
+  color: #166534;
+}
+
+.key-reveal-copy-btn {
+  padding: 0.5rem 1rem;
+  background: #22c55e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.key-reveal-copy-btn:hover {
+  background: #16a34a;
+}

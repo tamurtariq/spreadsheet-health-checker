@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import FileUpload from './FileUpload';
 import HealthReport from './HealthReport';
+import UpgradeModal from './UpgradeModal';
 import { useAuthContext } from '../lib/useAuthContext';
 import type { ParsedFile } from '../lib/parser';
 import type { HealthReport as HealthReportType } from '../lib/checks/types';
@@ -10,6 +11,7 @@ export default function Analyzer() {
   const [report, setReport] = useState<{ parsed: ParsedFile; report: HealthReportType } | null>(null);
   const [limitError, setLimitError] = useState<string | null>(null);
   const [isTracking, setIsTracking] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const handleAnalyzeComplete = useCallback(async (parsed: ParsedFile, healthReport: HealthReportType) => {
     setReport({ parsed, report: healthReport });
@@ -73,7 +75,7 @@ export default function Analyzer() {
           <p>You've used all {limits.scansPerMonth} scans for this month.</p>
           <p className="reset-info">Resets on the 1st of each month.</p>
           {limits.scansPerMonth !== -1 && (
-            <button className="upgrade-btn" onClick={() => alert('Upgrade flow coming soon')}>
+            <button className="upgrade-btn" onClick={() => setShowUpgradeModal(true)}>
               Upgrade to Pro for Unlimited Scans
             </button>
           )}
@@ -84,6 +86,8 @@ export default function Analyzer() {
           maxFileSize={limits.maxFileSizeMB * 1024 * 1024}
         />
       )}
+
+      <UpgradeModal open={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} />
     </div>
   );
 }
