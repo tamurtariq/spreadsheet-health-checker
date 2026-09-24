@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import '../styles/components.css';
 ---
 
 <Layout title="Dashboard - FOVIQ Tools">
@@ -63,6 +64,19 @@ import Layout from '../layouts/Layout.astro';
           <h2>API Keys</h2>
           <button id="create-api-key-btn" class="btn btn-primary btn-sm">Create Key</button>
         </div>
+        <div id="create-api-key-form" class="inline-form hidden">
+          <input type="text" id="new-api-key-name" placeholder="Key name (e.g. Production)" />
+          <button id="submit-api-key-btn" class="btn btn-primary btn-sm" type="button">Create</button>
+          <button id="cancel-api-key-btn" class="btn btn-secondary btn-sm" type="button">Cancel</button>
+        </div>
+        <div id="api-key-reveal" class="key-reveal hidden">
+          <p class="key-reveal-warning">⚠️ Save this key now — you won't see it again.</p>
+          <div class="key-reveal-row">
+            <input type="text" id="api-key-value" class="key-reveal-input" readonly />
+            <button id="copy-api-key-btn" class="key-reveal-copy-btn" type="button">Copy</button>
+          </div>
+        </div>
+        <div id="api-key-status" class="status-message hidden"></div>
         <div id="api-keys-list" class="api-keys-list">
           <p class="loading">Loading...</p>
         </div>
@@ -73,12 +87,36 @@ import Layout from '../layouts/Layout.astro';
           <h2>Team Members</h2>
           <button id="invite-member-btn" class="btn btn-primary btn-sm">Invite Member</button>
         </div>
+        <div id="invite-member-form" class="inline-form hidden">
+          <input type="email" id="invite-member-email" placeholder="teammate@company.com" />
+          <select id="invite-member-role">
+            <option value="member">Member</option>
+            <option value="admin">Admin</option>
+          </select>
+          <button id="submit-invite-btn" class="btn btn-primary btn-sm" type="button">Send Invite</button>
+          <button id="cancel-invite-btn" class="btn btn-secondary btn-sm" type="button">Cancel</button>
+        </div>
+        <div id="invite-status" class="status-message hidden"></div>
         <div id="team-members-list" class="team-members-list">
           <p class="loading">Loading...</p>
         </div>
       </section>
     </div>
   </main>
+
+  <div id="upgrade-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <svg class="modal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+      <h3>Upgrade to Pro</h3>
+      <p>We're finishing up billing so you can upgrade in-app. In the meantime, reach out and we'll get you set up directly.</p>
+      <div class="modal-actions">
+        <button id="upgrade-modal-close" class="modal-close-btn" type="button">Maybe Later</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     async function loadAuth() {
@@ -150,10 +188,17 @@ import Layout from '../layouts/Layout.astro';
       window.location.href = '/';
     });
     
+    const upgradeModal = document.getElementById('upgrade-modal')!;
     document.getElementById('upgrade-btn')!.addEventListener('click', () => {
-      alert('Upgrade flow coming soon (Lemon Squeezy integration)');
+      upgradeModal.classList.remove('hidden');
     });
-    
+    document.getElementById('upgrade-modal-close')!.addEventListener('click', () => {
+      upgradeModal.classList.add('hidden');
+    });
+    upgradeModal.addEventListener('click', (e) => {
+      if (e.target === upgradeModal) upgradeModal.classList.add('hidden');
+    });
+
     loadAuth();
     
     async function loadApiKeys() {
@@ -290,10 +335,37 @@ import Layout from '../layouts/Layout.astro';
       });
     }
     
-    document.getElementById('create-api-key-btn')!.addEventListener('click', async () => {
-      const name = prompt('Enter a name for this API key:');
-      if (!name) return;
-      
+    function showStatus(el: HTMLElement, message: string, type: 'success' | 'error') {
+      el.textContent = message;
+      el.className = `status-message ${type}`;
+    }
+
+    const createApiKeyForm = document.getElementById('create-api-key-form')!;
+    const newApiKeyNameInput = document.getElementById('new-api-key-name') as HTMLInputElement;
+    const apiKeyReveal = document.getElementById('api-key-reveal')!;
+    const apiKeyValueInput = document.getElementById('api-key-value') as HTMLInputElement;
+    const apiKeyStatus = document.getElementById('api-key-status')!;
+
+    document.getElementById('create-api-key-btn')!.addEventListener('click', () => {
+      apiKeyReveal.classList.add('hidden');
+      apiKeyStatus.classList.add('hidden');
+      createApiKeyForm.classList.remove('hidden');
+      newApiKeyNameInput.value = '';
+      newApiKeyNameInput.focus();
+    });
+
+    document.getElementById('cancel-api-key-btn')!.addEventListener('click', () => {
+      createApiKeyForm.classList.add('hidden');
+    });
+
+    document.getElementById('submit-api-key-btn')!.addEventListener('click', async () => {
+      const name = newApiKeyNameInput.value.trim();
+      if (!name) {
+        apiKeyStatus.classList.remove('hidden');
+        showStatus(apiKeyStatus, 'Enter a name for this key.', 'error');
+        return;
+      }
+
       try {
         const res = await fetch('/api/api-keys', {
           method: 'POST',
@@ -301,25 +373,62 @@ import Layout from '../layouts/Layout.astro';
           credentials: 'include',
           body: JSON.stringify({ name }),
         });
-        
+
         const data = await res.json();
         if (res.ok) {
-          alert(`API Key created! Save this key - you won't see it again:\n\n${data.key}`);
+          createApiKeyForm.classList.add('hidden');
+          apiKeyStatus.classList.add('hidden');
+          apiKeyValueInput.value = data.key;
+          apiKeyReveal.classList.remove('hidden');
           loadApiKeys();
         } else {
-          alert(`Error: ${data.error || 'Failed to create key'}`);
+          apiKeyStatus.classList.remove('hidden');
+          showStatus(apiKeyStatus, data.error || 'Failed to create key', 'error');
         }
       } catch (error) {
-        alert('Failed to create API key');
+        apiKeyStatus.classList.remove('hidden');
+        showStatus(apiKeyStatus, 'Failed to create API key', 'error');
       }
     });
+
+    document.getElementById('copy-api-key-btn')!.addEventListener('click', async () => {
+      const btn = document.getElementById('copy-api-key-btn')!;
+      try {
+        await navigator.clipboard.writeText(apiKeyValueInput.value);
+      } catch {
+        apiKeyValueInput.select();
+      }
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    });
     
-    document.getElementById('invite-member-btn')!.addEventListener('click', async () => {
-      const email = prompt('Enter email to invite:');
-      if (!email) return;
-      
-      const role = confirm('Make them an admin?') ? 'admin' : 'member';
-      
+    const inviteMemberForm = document.getElementById('invite-member-form')!;
+    const inviteMemberEmailInput = document.getElementById('invite-member-email') as HTMLInputElement;
+    const inviteMemberRoleSelect = document.getElementById('invite-member-role') as HTMLSelectElement;
+    const inviteStatus = document.getElementById('invite-status')!;
+
+    document.getElementById('invite-member-btn')!.addEventListener('click', () => {
+      inviteStatus.classList.add('hidden');
+      inviteMemberForm.classList.remove('hidden');
+      inviteMemberEmailInput.value = '';
+      inviteMemberEmailInput.focus();
+    });
+
+    document.getElementById('cancel-invite-btn')!.addEventListener('click', () => {
+      inviteMemberForm.classList.add('hidden');
+    });
+
+    document.getElementById('submit-invite-btn')!.addEventListener('click', async () => {
+      const email = inviteMemberEmailInput.value.trim();
+      if (!email) {
+        inviteStatus.classList.remove('hidden');
+        showStatus(inviteStatus, 'Enter an email address.', 'error');
+        return;
+      }
+
+      const role = inviteMemberRoleSelect.value;
+
       try {
         const res = await fetch('/api/teams', {
           method: 'POST',
@@ -327,16 +436,19 @@ import Layout from '../layouts/Layout.astro';
           credentials: 'include',
           body: JSON.stringify({ email, role }),
         });
-        
+
         const data = await res.json();
+        inviteStatus.classList.remove('hidden');
         if (res.ok) {
-          alert(`Invitation sent to ${email}!`);
+          inviteMemberForm.classList.add('hidden');
+          showStatus(inviteStatus, `Invitation sent to ${email}.`, 'success');
           loadTeam();
         } else {
-          alert(`Error: ${data.error || 'Failed to invite'}`);
+          showStatus(inviteStatus, data.error || 'Failed to invite', 'error');
         }
       } catch (error) {
-        alert('Failed to invite member');
+        inviteStatus.classList.remove('hidden');
+        showStatus(inviteStatus, 'Failed to invite member', 'error');
       }
     });
     

@@ -116,6 +116,7 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
   const [filterSeverity, setFilterSeverity] = useState<Finding['severity'][]>(['critical', 'high', 'medium', 'low']);
   const [filterCategory, setFilterCategory] = useState<Finding['category'][]>(['formula', 'data', 'structure']);
   const [searchQuery, setSearchQuery] = useState('');
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   const filteredFindings = useMemo(() => {
     let findings = filterFindings(report.findings, {
@@ -145,9 +146,10 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
   };
 
   const handleExportPDF = async () => {
+    setPdfError(null);
     try {
       const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
-      
+
       const pdfDoc = await PDFDocument.create();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -237,7 +239,7 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
       link.click();
     } catch (error) {
       console.error('PDF export failed:', error);
-      alert('Failed to generate PDF');
+      setPdfError('Failed to generate PDF. Please try again.');
     }
   };
 
@@ -367,6 +369,17 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
           New Analysis
         </button>
       </div>
+
+      {pdfError && (
+        <div className="error-message" role="alert">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+          <span>{pdfError}</span>
+        </div>
+      )}
 
       <div className="findings-list">
         {filteredFindings.length === 0 ? (
