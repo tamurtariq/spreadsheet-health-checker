@@ -15,6 +15,14 @@
 			"remote": true
 		}
 	],
+	"previews": {
+		"kv_namespaces": [
+			{
+				"binding": "SESSION",
+				"id": "0cfcd8e42c9b4f0e9660cfe3876d7dfc"
+			}
+		]
+	},
 	"vars": {
 		"FROM_EMAIL": "digest@yourdomain.com",
 		"FROM_NAME": "Spreadsheet Health Checker"
