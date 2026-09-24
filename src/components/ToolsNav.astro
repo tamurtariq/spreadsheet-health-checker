@@ -5,10 +5,29 @@ interface Props {
 }
 
 const { theme = 'light', logoText = 'FOVIQ Tools' } = Astro.props;
+
+const TOOLS = [
+  { href: '/', label: 'Health Checker' },
+  { href: '/diff', label: 'Diff Checker' },
+  { href: '/lead-csv-cleaner', label: 'Lead CSV Cleaner' },
+];
+
+const normalize = (path: string) => path.replace(/\/$/, '') || '/';
+const currentPath = normalize(Astro.url.pathname);
 ---
 
 <nav class="nav-bar" data-theme={theme}>
   <a href="/" class="logo">{logoText}</a>
+  <div class="tools-links">
+    {TOOLS.map(tool => (
+      <a
+        href={tool.href}
+        class:list={['tools-link', { active: normalize(tool.href) === currentPath }]}
+      >
+        {tool.label}
+      </a>
+    ))}
+  </div>
   <div id="nav-auth" class="nav-auth">
     <a href="/login" class="btn btn-secondary">Sign In</a>
     <a href="/login" class="btn btn-primary">Get Started Free</a>
@@ -55,6 +74,23 @@ const { theme = 'light', logoText = 'FOVIQ Tools' } = Astro.props;
 
   .nav-auth { display: flex; gap: 0.75rem; }
 
+  .tools-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .tools-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .tools-link:hover { opacity: 1; }
+  .tools-link.active { opacity: 1; font-weight: 700; }
+
   .btn {
     padding: 0.5rem 1.25rem;
     border-radius: 8px;
@@ -73,6 +109,7 @@ const { theme = 'light', logoText = 'FOVIQ Tools' } = Astro.props;
     font-weight: 700;
     text-decoration: none;
   }
+  .nav-bar[data-theme='hero'] .tools-link { color: white; }
   .nav-bar[data-theme='hero'] .btn-primary { background: white; color: #667eea; }
   .nav-bar[data-theme='hero'] .btn-primary:hover { background: #f3f4f6; }
   .nav-bar[data-theme='hero'] .btn-secondary {
@@ -100,6 +137,7 @@ const { theme = 'light', logoText = 'FOVIQ Tools' } = Astro.props;
     font-weight: 700;
     text-decoration: none;
   }
+  .nav-bar[data-theme='light'] .tools-link { color: #374151; }
   .nav-bar[data-theme='light'] .btn-primary { background: #667eea; color: white; }
   .nav-bar[data-theme='light'] .btn-primary:hover { background: #5a6fd6; }
   .nav-bar[data-theme='light'] .btn-secondary {
