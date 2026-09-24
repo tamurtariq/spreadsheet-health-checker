@@ -1,3 +1,4 @@
+import Papa from 'papaparse';
 import type { ParsedFile, Cell } from './parser';
 import { detectHeaderRow, classifyColumns } from './cleaning/columns';
 import { cleanEmail } from './cleaning/email';
@@ -188,4 +189,13 @@ function cleanCell(
   }
 
   return (raw as CleanedCell) ?? null;
+}
+
+/**
+ * Serializes the cleaned dataset back to a CSV string, preserving the
+ * original header row and column order.
+ */
+export function exportCleanedCSV(result: CleaningResult): string {
+  const rows = result.hasHeaderRow ? [result.header, ...result.cleanedRows] : result.cleanedRows;
+  return Papa.unparse(rows);
 }
