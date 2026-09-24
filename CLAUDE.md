@@ -15,7 +15,9 @@ Production URL: https://tools.foviq.com/
   `src/layouts/Layout.astro` via `<Layout title="...">`.
 - `src/components/*.tsx` — React islands: `Analyzer` (upload + run checks),
   `HealthReport` (results view, PDF export via a lazy-loaded `pdf-lib`),
-  `DiffChecker` (Pro/Team feature), `FileUpload`.
+  `DiffChecker` (Pro/Team feature), `FileUpload` (thin wrapper around the
+  generic `FileDropZone`). `src/components/ToolsNav.astro` is the shared,
+  themed nav bar used by tool pages (see "Multi-tool platform" below).
 - `src/lib/parser.ts` + `src/lib/engine.ts` — parse uploaded files and run
   checks (`src/lib/checks/{formula,data,structure}.ts`) to produce a
   `HealthReport`.
@@ -52,6 +54,53 @@ editing a shared component (especially `Layout.astro`), verify every
 `{prop}` used in the template has a corresponding `Astro.props` destructure
 before pushing, and prefer testing a real request (`astro dev`/`preview`,
 not just `astro build`) for any layout/shared-component change.
+
+### Wrangler preview-deploy KV gotcha
+
+`wrangler.jsonc`'s top-level `kv_namespaces[].preview_id` is **not** read by
+`@astrojs/cloudflare`'s config generator for PR preview deploys (`wrangler
+preview`, run by Cloudflare Workers Builds). It only checks whether a
+top-level `previews` block already defines the binding; if absent, it injects
+a bare `{ binding: "SESSION" }` with no id, causing `binding SESSION of type
+kv_namespace must have a namespace_id specified [code: 10021]`. Any KV
+binding needs an explicit `previews.kv_namespaces` entry with its own `id` in
+`wrangler.jsonc` (see the existing `SESSION` entry) — don't assume
+`preview_id` alone covers it. Verify by rebuilding and inspecting
+`dist/server/wrangler.json`'s `previews` block directly; the GitHub Checks
+API doesn't expose Cloudflare's build log text, so this can't be diagnosed
+from PR check output alone — get the log from the Cloudflare dashboard link
+in the PR's deploy comment.
+
+### Multi-tool platform (tools.foviq.com)
+
+This project is meant to host more than one tool (the health checker today;
+a Lead CSV Cleaner and others planned) under the same Astro app, sharing
+auth, billing scaffolding, and UI primitives. Decisions made so far:
+
+- **Shared components for reuse across tools**: `src/components/ToolsNav.astro`
+  (themed nav bar + auth-aware menu — pass `theme="hero"` for a dark/gradient
+  header or `theme="light"` for a white one, plus `logoText`) and
+  `src/components/FileDropZone.tsx` (generic drag-and-drop file picker;
+  takes an `onRun(file, setProgress)` pipeline function so each tool supplies
+  its own processing logic while reusing the upload UI, validation, progress
+  bar, and error display). `FileUpload.tsx` is a thin health-checker-specific
+  wrapper around `FileDropZone`.
+- **Scan quota is shared, not per-tool**: `scan_counters` in D1 is keyed only
+  by `user_id` (see `migrations/0001_initial_schema.sql`), and
+  `functions/api/scans/track.ts` / `getTierLimits()` have no per-tool
+  dimension. New tools should call the same `/api/scans/track` endpoint and
+  draw from the same monthly allowance rather than getting their own — this
+  was a deliberate choice (ships faster, no migration, and is a stronger
+  upgrade incentive) over adding a `tool` column to `scan_counters`. Revisit
+  only if that product decision changes.
+- **Billing is not actually wired up**: `subscriptions.lemon_squeezy_id` is a
+  schema column only — there is no checkout or webhook integration anywhere
+  in `functions/api/**`. The upgrade buttons in `dashboard.astro` and
+  `Analyzer.tsx` are `alert('Upgrade flow coming soon')` placeholders. Don't
+  assume Pro/Team gating can actually be purchased until this is built.
+- **Routing convention**: each tool gets a root-level slug (e.g.
+  `/lead-csv-cleaner`), not a `/tools/*` namespace, to avoid any risk to the
+  existing homepage's SEO.
 
 ## Development
 

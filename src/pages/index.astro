@@ -1,19 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Analyzer from '../components/Analyzer.tsx';
+import ToolsNav from '../components/ToolsNav.astro';
 ---
 
 <Layout title="Spreadsheet Health Checker">
   <meta name="google-site-verification" content="lzgnJVpNBXxPeYzWCCJxUccV_8Znnw_Zry14PDS_jvg" slot="head" />
   <main class="main">
     <header class="hero">
-      <nav class="nav-bar">
-        <a href="/" class="logo">Spreadsheet Health Checker</a>
-        <div id="nav-auth" class="nav-auth">
-          <a href="/login" class="btn btn-secondary">Sign In</a>
-          <a href="/login" class="btn btn-primary">Get Started Free</a>
-        </div>
-      </nav>
+      <ToolsNav theme="hero" logoText="Spreadsheet Health Checker" />
       <div class="hero-content">
         <h1>Spreadsheet Health Checker</h1>
         <p class="tagline">Validate your spreadsheets for formula errors, data quality issues, and structural problems — 100% client-side, zero data upload.</p>
@@ -149,24 +144,6 @@ import Analyzer from '../components/Analyzer.tsx';
       width: 100%;
     }
     
-    .nav-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-    }
-    
-    .nav-auth { display: flex; gap: 0.75rem; }
-    
     .btn {
       padding: 0.5rem 1.25rem;
       border-radius: 8px;
@@ -182,68 +159,20 @@ import Analyzer from '../components/Analyzer.tsx';
     }
     .btn-primary:hover { background: #f3f4f6; }
     
-    .btn-secondary {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-    }
-    .btn-secondary:hover { background: rgba(255,255,255,0.3); }
-    
     .btn-large {
       padding: 1rem 2rem;
       font-size: 1.125rem;
     }
     
     .hero-cta { margin-top: 2rem; }
-    
-    .user-menu { display: flex; align-items: center; gap: 1rem; }
-    .user-email { color: rgba(255,255,255,0.8); font-size: 0.875rem; }
-    .btn-logout {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.875rem;
-    }
-    .btn-logout:hover { background: rgba(255,255,255,0.3); }
-    
+
     .analyzer-section { max-width: 800px; }
-    
+
     @media (max-width: 768px) {
       .hero h1 { font-size: 2rem; }
       .tagline { font-size: 1rem; }
       .features { grid-template-columns: 1fr; }
-      .nav-bar { flex-direction: column; gap: 1rem; }
       .hero-cta { margin-top: 1rem; }
     }
   </style>
-
-  <script>
-    async function loadAuth() {
-      try {
-        const res = await fetch('/api/auth/me', { credentials: 'include' });
-        const data = await res.json();
-        const navAuth = document.getElementById('nav-auth');
-        
-        if (data.user) {
-          navAuth.innerHTML = `
-            <div class="user-menu">
-              <span class="user-email">${data.user.email}</span>
-              <a href="/dashboard" class="btn btn-primary">Dashboard</a>
-              <button id="logout-btn" class="btn btn-secondary btn-logout">Logout</button>
-            </div>
-          `;
-          document.getElementById('logout-btn')?.addEventListener('click', async () => {
-            await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-            window.location.reload();
-          });
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-      }
-    }
-    loadAuth();
-  </script>
 </Layout>
