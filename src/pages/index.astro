@@ -6,16 +6,16 @@ import ToolsNav from '../components/ToolsNav.astro';
 
 <Layout title="FOVIQ Tools">
   <meta name="google-site-verification" content="lzgnJVpNBXxPeYzWCCJxUccV_8Znnw_Zry14PDS_jvg" slot="head" />
-  <main class="main">
+  <main class="main" id="main-content">
     <header class="hero">
       <ToolsNav theme="hero" />
       <div class="hero-content">
         <h1>Spreadsheet Health Checker</h1>
         <p class="tagline">Validate your spreadsheets for formula errors, data quality issues, and structural problems — 100% client-side, zero data upload.</p>
         <div class="hero-badges">
-          <span class="badge">🔒 Privacy First</span>
-          <span class="badge">⚡ Instant Results</span>
-          <span class="badge">📊 CSV & Excel</span>
+          <span class="badge"><span aria-hidden="true">🔒</span> Privacy First</span>
+          <span class="badge"><span aria-hidden="true">⚡</span> Instant Results</span>
+          <span class="badge"><span aria-hidden="true">📊</span> CSV & Excel</span>
         </div>
         <div class="hero-cta">
           <a href="/login" class="btn btn-primary btn-large">Start Free Analysis</a>
@@ -25,17 +25,17 @@ import ToolsNav from '../components/ToolsNav.astro';
 
     <section class="features">
       <div class="feature">
-        <div class="feature-icon">🔍</div>
+        <div class="feature-icon" aria-hidden="true">🔍</div>
         <h3>Formula Validation</h3>
         <p>Detects #REF!, #DIV/0!, #VALUE!, circular references, inconsistent formulas, and volatile functions.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">📋</div>
+        <div class="feature-icon" aria-hidden="true">📋</div>
         <h3>Data Quality Checks</h3>
         <p>Identifies mixed types, numbers stored as text, duplicate keys, whitespace anomalies, and blank clusters.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">🏗️</div>
+        <div class="feature-icon" aria-hidden="true">🏗️</div>
         <h3>Structure Analysis</h3>
         <p>Finds hidden rows/columns with data, oversized sheets, trailing empty rows/columns, and sparse data.</p>
       </div>
@@ -56,7 +56,7 @@ import ToolsNav from '../components/ToolsNav.astro';
     .hero {
       padding: 4rem 2rem;
       text-align: center;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
       color: white;
     }
     
@@ -107,7 +107,7 @@ import ToolsNav from '../components/ToolsNav.astro';
     
     .feature {
       padding: 2rem;
-      background: white;
+      background: var(--color-surface);
       border-radius: 12px;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
       text-align: center;
@@ -128,11 +128,11 @@ import ToolsNav from '../components/ToolsNav.astro';
       font-size: 1.25rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
-      color: #1f2937;
+      color: var(--color-text);
     }
     
     .feature p {
-      color: #6b7280;
+      color: var(--color-text-muted);
       line-height: 1.6;
     }
     
@@ -154,10 +154,10 @@ import ToolsNav from '../components/ToolsNav.astro';
     }
     
     .btn-primary {
-      background: white;
-      color: #667eea;
+      background: var(--color-surface);
+      color: var(--brand-500);
     }
-    .btn-primary:hover { background: #f3f4f6; }
+    .btn-primary:hover { background: var(--gray-100); }
     
     .btn-large {
       padding: 1rem 2rem;

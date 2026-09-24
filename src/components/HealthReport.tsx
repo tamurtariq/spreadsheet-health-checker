@@ -14,10 +14,10 @@ interface HealthReportProps {
 }
 
 const SEVERITY_COLORS = {
-  critical: { bg: '#fef2f2', border: '#ef4444', text: '#991b1b', icon: '#ef4444' },
-  high: { bg: '#fff7ed', border: '#f97316', text: '#9a3412', icon: '#f97316' },
-  medium: { bg: '#fffbeb', border: '#f59e0b', text: '#92400e', icon: '#f59e0b' },
-  low: { bg: '#f0fdf4', border: '#22c55e', text: '#166534', icon: '#22c55e' },
+  critical: { bg: 'var(--color-danger-bg)', border: 'var(--color-danger)', text: 'var(--color-danger-text)', icon: 'var(--color-danger)' },
+  high: { bg: 'var(--color-high-bg)', border: 'var(--color-high)', text: 'var(--color-high-text)', icon: 'var(--color-high)' },
+  medium: { bg: 'var(--color-warning-bg)', border: 'var(--color-warning)', text: 'var(--color-warning-text)', icon: 'var(--color-warning)' },
+  low: { bg: 'var(--color-success-bg)', border: 'var(--color-success)', text: 'var(--color-success-text)', icon: 'var(--color-success)' },
 };
 
 const CATEGORY_ICONS = {
@@ -27,11 +27,11 @@ const CATEGORY_ICONS = {
 };
 
 const GRADE_COLORS: Record<'A' | 'B' | 'C' | 'D' | 'F', { bg: string; text: string }> = {
-  A: { bg: '#dcfce7', text: '#166534' },
-  B: { bg: '#dbeafe', text: '#1e40af' },
-  C: { bg: '#fef9c3', text: '#854d0e' },
-  D: { bg: '#ffedd5', text: '#9a3412' },
-  F: { bg: '#fee2e2', text: '#991b1b' },
+  A: { bg: 'var(--color-success-bg-strong)', text: 'var(--color-success-text)' },
+  B: { bg: 'var(--color-info-bg-strong)', text: 'var(--color-info-text)' },
+  C: { bg: 'var(--color-warning-bg-strong)', text: 'var(--color-warning-text)' },
+  D: { bg: 'var(--color-high-bg)', text: 'var(--color-high-text)' },
+  F: { bg: 'var(--color-danger-bg)', text: 'var(--color-danger-text)' },
 };
 
 function GradeBadge({ grade }: { grade: 'A' | 'B' | 'C' | 'D' | 'F' }) {
@@ -44,10 +44,10 @@ function GradeBadge({ grade }: { grade: 'A' | 'B' | 'C' | 'D' | 'F' }) {
 }
 
 const SEVERITY_BADGE_COLORS: Record<Finding['severity'], { bg: string; text: string }> = {
-  critical: { bg: '#fee2e2', text: '#991b1b' },
-  high: { bg: '#ffedd5', text: '#9a3412' },
-  medium: { bg: '#fef9c3', text: '#854d0e' },
-  low: { bg: '#dcfce7', text: '#166534' },
+  critical: { bg: 'var(--color-danger-bg)', text: 'var(--color-danger-text)' },
+  high: { bg: 'var(--color-high-bg)', text: 'var(--color-high-text)' },
+  medium: { bg: 'var(--color-warning-bg)', text: 'var(--color-warning-text)' },
+  low: { bg: 'var(--color-success-bg)', text: 'var(--color-success-text)' },
 };
 
 function SeverityBadge({ severity }: { severity: Finding['severity'] }) {
@@ -62,7 +62,7 @@ function SeverityBadge({ severity }: { severity: Finding['severity'] }) {
 function CategoryBadge({ category }: { category: Finding['category'] }) {
   const labels = { formula: 'Formula', data: 'Data Quality', structure: 'Structure' };
   return (
-    <span style={{ padding: '0.125rem 0.5rem', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500, background: '#f3f4f6', color: '#374151' }}>
+    <span style={{ padding: '0.125rem 0.5rem', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500, background: 'var(--gray-100)', color: 'var(--color-text-secondary)' }}>
       {labels[category]}
     </span>
   );
@@ -71,6 +71,7 @@ function CategoryBadge({ category }: { category: Finding['category'] }) {
 function FindingCard({ finding }: { finding: Finding }) {
   const colors = SEVERITY_COLORS[finding.severity];
   const [expanded, setExpanded] = useState(false);
+  const contentId = `finding-content-${finding.id}`;
 
   return (
     <div
@@ -80,34 +81,45 @@ function FindingCard({ finding }: { finding: Finding }) {
         backgroundColor: colors.bg,
       }}
     >
-      <div className="finding-header" onClick={() => setExpanded(!expanded)} style={{ cursor: 'pointer' }}>
+      <button
+        type="button"
+        className="finding-header"
+        onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        aria-controls={contentId}
+      >
         <div className="finding-title-row">
-          <span style={{ color: colors.icon }} role="img" aria-label={finding.category}>
+          <span style={{ color: colors.icon }} aria-hidden="true">
             {CATEGORY_ICONS[finding.category]}
           </span>
           <h4 className="finding-title" style={{ color: colors.text }}>{finding.title}</h4>
           <SeverityBadge severity={finding.severity} />
           <CategoryBadge category={finding.category} />
+          <svg className="finding-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
         </div>
         <div className="finding-meta">
-          <span>📄 {finding.sheet}</span>
+          <span><span aria-hidden="true">📄</span> {finding.sheet}</span>
           {finding.location?.row !== undefined && (
-            <span>📍 Row {finding.location.row + 1}, Col {String.fromCharCode(65 + (finding.location.col || 0))}</span>
+            <span><span aria-hidden="true">📍</span> Row {finding.location.row + 1}, Col {String.fromCharCode(65 + (finding.location.col || 0))}</span>
           )}
           {finding.affectedCells && (
-            <span>🔢 {finding.affectedCells} cell(s) affected</span>
+            <span><span aria-hidden="true">🔢</span> {finding.affectedCells} cell(s) affected</span>
           )}
         </div>
-      </div>
-      
-      <div className="finding-content">
-        <p className="finding-description">{finding.description}</p>
-        {finding.suggestion && (
-          <p className="finding-suggestion">
-            <strong>Suggestion: </strong>{finding.suggestion}
-          </p>
-        )}
-      </div>
+      </button>
+
+      {expanded && (
+        <div className="finding-content" id={contentId}>
+          <p className="finding-description">{finding.description}</p>
+          {finding.suggestion && (
+            <p className="finding-suggestion">
+              <strong>Suggestion: </strong>{finding.suggestion}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -258,8 +270,8 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
           <GradeBadge grade={report.score.grade} />
         </div>
         <div className="report-score">
-          <div className="score-circle" style={{ 
-            '--score-color': report.score.score >= 80 ? '#22c55e' : report.score.score >= 60 ? '#f59e0b' : '#ef4444' 
+          <div className="score-circle" style={{
+            '--score-color': report.score.score >= 80 ? 'var(--color-success)' : report.score.score >= 60 ? 'var(--color-warning)' : 'var(--color-danger)'
           }}>
             <span className="score-value">{report.score.score}</span>
             <span className="score-label">/ 100</span>
@@ -334,7 +346,7 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
                 prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
               )}
             >
-              {CATEGORY_ICONS[cat]} {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              <span aria-hidden="true">{CATEGORY_ICONS[cat]}</span> {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
           ))}
         </div>

@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="Spreadsheet Health Checker vs Manual Review">
-  <main class="main">
+  <main class="main" id="main-content">
     <header class="compare-header">
       <div class="compare-header-content">
         <h1>Spreadsheet Health Checker <span class="vs">vs</span> Manual Review</h1>
@@ -15,32 +15,32 @@ import Layout from '../../layouts/Layout.astro';
       <h2>The Problem with Manual Review</h2>
       <div class="problem-grid">
         <article class="problem-card">
-          <div class="problem-icon">⏱️</div>
+          <div class="problem-icon" aria-hidden="true">⏱️</div>
           <h3>Time Consuming</h3>
           <p>A 10,000-row spreadsheet takes <strong>4-8 hours</strong> to review manually. Our tool does it in <strong>under 10 seconds</strong>.</p>
         </article>
         <article class="problem-card">
-          <div class="problem-icon">👁️</div>
+          <div class="problem-icon" aria-hidden="true">👁️</div>
           <h3>Human Error</h3>
           <p>Studies show reviewers miss <strong>30-50%</strong> of formula errors. Fatigue sets in after 30 minutes.</p>
         </article>
         <article class="problem-card">
-          <div class="problem-icon">🔍</div>
+          <div class="problem-icon" aria-hidden="true">🔍</div>
           <h3>Invisible Errors</h3>
           <p>Hidden rows, white-on-white text, and off-screen columns are easily missed. Automated tools check every cell.</p>
         </article>
         <article class="problem-card">
-          <div class="problem-icon">🔄</div>
+          <div class="problem-icon" aria-hidden="true">🔄</div>
           <h3>No Regression Testing</h3>
           <p>After fixes, manual re-review is rarely done. Automated checks run every time — catching regressions instantly.</p>
         </article>
         <article class="problem-card">
-          <div class="problem-icon">📋</div>
+          <div class="problem-icon" aria-hidden="true">📋</div>
           <h3>Inconsistent Standards</h3>
           <p>Different reviewers check different things. Our 30+ checks run the same way every time.</p>
         </article>
         <article class="problem-card">
-          <div class="problem-icon">📊</div>
+          <div class="problem-icon" aria-hidden="true">📊</div>
           <h3>No Audit Trail</h3>
           <p>Manual reviews leave no evidence. Our reports export to CSV/PDF for compliance and audit trails.</p>
         </article>
@@ -151,7 +151,7 @@ import Layout from '../../layouts/Layout.astro';
     .main { min-height: 100vh; }
     
     .compare-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
       color: white;
       padding: 4rem 2rem;
       text-align: center;
@@ -168,7 +168,7 @@ import Layout from '../../layouts/Layout.astro';
       padding: 3rem 2rem;
     }
     
-    .problem-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    .problem-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
     
     .problem-grid {
       display: grid;
@@ -177,17 +177,17 @@ import Layout from '../../layouts/Layout.astro';
     }
     
     .problem-card {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 1.5rem;
       text-align: center;
     }
     
     .problem-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .problem-card h3 { margin: 0 0 0.75rem; font-size: 1.125rem; color: #1f2937; }
-    .problem-card p { margin: 0; color: #4b5563; line-height: 1.6; }
-    .problem-card strong { color: #ef4444; }
+    .problem-card h3 { margin: 0 0 0.75rem; font-size: 1.125rem; color: var(--color-text); }
+    .problem-card p { margin: 0; color: var(--color-text-secondary); line-height: 1.6; }
+    .problem-card strong { color: var(--color-danger); }
     
     .roi-section {
       max-width: 1000px;
@@ -195,7 +195,7 @@ import Layout from '../../layouts/Layout.astro';
       padding: 0 2rem;
     }
     
-    .roi-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    .roi-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
     
     .roi-grid {
       display: grid;
@@ -204,21 +204,21 @@ import Layout from '../../layouts/Layout.astro';
     }
     
     .roi-card {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 2rem;
     }
     
     .roi-card.highlight {
-      border-color: #667eea;
-      background: #f0f4ff;
+      border-color: var(--brand-500);
+      background: var(--brand-bg-subtle);
     }
     
-    .roi-card h3 { margin: 0 0 1rem; font-size: 1.25rem; color: #1f2937; }
+    .roi-card h3 { margin: 0 0 1rem; font-size: 1.25rem; color: var(--color-text); }
     .roi-card ul { margin: 0; padding-left: 1.25rem; }
-    .roi-card li { margin: 0.5rem 0; color: #4b5563; }
-    .roi-card strong { color: #1f2937; font-size: 1.125rem; }
+    .roi-card li { margin: 0.5rem 0; color: var(--color-text-secondary); }
+    .roi-card strong { color: var(--color-text); font-size: 1.125rem; }
     
     .what-you-miss {
       max-width: 1000px;
@@ -226,7 +226,7 @@ import Layout from '../../layouts/Layout.astro';
       padding: 0 2rem;
     }
     
-    .what-you-miss h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    .what-you-miss h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
     
     .miss-grid {
       display: grid;
@@ -235,15 +235,15 @@ import Layout from '../../layouts/Layout.astro';
     }
     
     .miss-category {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 1.5rem;
     }
     
-    .miss-category h3 { margin: 0 0 1rem; font-size: 1.125rem; color: #1f2937; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb; }
+    .miss-category h3 { margin: 0 0 1rem; font-size: 1.125rem; color: var(--color-text); padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border); }
     .miss-category ul { margin: 0; padding-left: 1.25rem; }
-    .miss-category li { margin: 0.375rem 0; color: #4b5563; font-size: 0.9375rem; }
+    .miss-category li { margin: 0.375rem 0; color: var(--color-text-secondary); font-size: 0.9375rem; }
     
     .workflow-section {
       max-width: 1000px;
@@ -251,7 +251,7 @@ import Layout from '../../layouts/Layout.astro';
       padding: 0 2rem;
     }
     
-    .workflow-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; text-align: center; }
+    .workflow-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
     
     .workflow-comparison {
       display: grid;
@@ -260,51 +260,51 @@ import Layout from '../../layouts/Layout.astro';
     }
     
     .workflow-column {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 2rem;
     }
     
     .workflow-column.highlight {
-      border-color: #667eea;
-      background: #f0f4ff;
+      border-color: var(--brand-500);
+      background: var(--brand-bg-subtle);
     }
     
-    .workflow-column h3 { margin: 0 0 1.5rem; font-size: 1.25rem; color: #1f2937; }
+    .workflow-column h3 { margin: 0 0 1.5rem; font-size: 1.25rem; color: var(--color-text); }
     .workflow-column ol { margin: 0; padding-left: 1.25rem; }
-    .workflow-column li { margin: 0.75rem 0; color: #4b5563; line-height: 1.5; }
+    .workflow-column li { margin: 0.75rem 0; color: var(--color-text-secondary); line-height: 1.5; }
     
     .time-badge {
       display: inline-block;
       margin-top: 1.5rem;
       padding: 0.75rem 1.5rem;
-      background: #f3f4f6;
-      color: #374151;
+      background: var(--gray-100);
+      color: var(--color-text-secondary);
       border-radius: 9999px;
       font-weight: 600;
       font-size: 1.125rem;
     }
     
     .workflow-column.highlight .time-badge {
-      background: #667eea;
+      background: var(--brand-500);
       color: white;
     }
     
     .cta-section {
       text-align: center;
       padding: 4rem 2rem;
-      background: #f9fafb;
-      border-top: 1px solid #e5e7eb;
+      background: var(--color-bg-subtle);
+      border-top: 1px solid var(--color-border);
     }
     
-    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: #1f2937; }
-    .cta-section p { color: #6b7280; margin: 0 0 2rem; font-size: 1.125rem; }
+    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: var(--color-text); }
+    .cta-section p { color: var(--color-text-muted); margin: 0 0 2rem; font-size: 1.125rem; }
     
     .cta-btn {
       display: inline-block;
       padding: 1rem 2.5rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
       color: white;
       border-radius: 8px;
       font-weight: 600;

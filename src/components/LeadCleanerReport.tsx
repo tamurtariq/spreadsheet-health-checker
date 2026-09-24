@@ -23,11 +23,11 @@ const ROLE_LABELS: Record<FieldRole, string> = {
 };
 
 const ACTION_COLORS: Record<CleaningActionType, { bg: string; border: string; text: string }> = {
-  formatted: { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' },
-  capitalized: { bg: '#eff6ff', border: '#3b82f6', text: '#1e40af' },
-  trimmed: { bg: '#f0fdf4', border: '#22c55e', text: '#166534' },
-  'flagged-invalid': { bg: '#fef2f2', border: '#ef4444', text: '#991b1b' },
-  'flagged-disposable': { bg: '#fff7ed', border: '#f97316', text: '#9a3412' },
+  formatted: { bg: 'var(--color-info-bg)', border: 'var(--color-info)', text: 'var(--color-info-text)' },
+  capitalized: { bg: 'var(--color-info-bg)', border: 'var(--color-info)', text: 'var(--color-info-text)' },
+  trimmed: { bg: 'var(--color-success-bg)', border: 'var(--color-success)', text: 'var(--color-success-text)' },
+  'flagged-invalid': { bg: 'var(--color-danger-bg)', border: 'var(--color-danger)', text: 'var(--color-danger-text)' },
+  'flagged-disposable': { bg: 'var(--color-high-bg)', border: 'var(--color-high)', text: 'var(--color-high-text)' },
 };
 
 const ACTIONS_PREVIEW_LIMIT = 50;
@@ -41,8 +41,8 @@ function ActionCard({ action }: { action: CleaningAction }) {
           <h4 className="finding-title" style={{ color: colors.text }}>{action.message}</h4>
         </div>
         <div className="finding-meta">
-          <span>📍 Row {action.row + 1}</span>
-          <span>🏷️ {ROLE_LABELS[action.role]}</span>
+          <span><span aria-hidden="true">📍</span> Row {action.row + 1}</span>
+          <span><span aria-hidden="true">🏷️</span> {ROLE_LABELS[action.role]}</span>
         </div>
       </div>
       <div className="finding-content">

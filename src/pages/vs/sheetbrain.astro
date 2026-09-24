@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 ---
 
 <Layout title="Spreadsheet Health Checker vs SheetBrain">
-  <main class="main">
+  <main class="main" id="main-content">
     <header class="compare-header">
       <div class="compare-header-content">
         <h1>Spreadsheet Health Checker <span class="vs">vs</span> SheetBrain</h1>
@@ -71,25 +71,25 @@ import Layout from '../../layouts/Layout.astro';
 
       <div class="comparison-grid">
         <article class="comparison-card">
-          <h3>🔒 Privacy & Security</h3>
+          <h3><span aria-hidden="true">🔒</span> Privacy & Security</h3>
           <p><strong>Spreadsheet Health Checker:</strong> All processing happens in your browser. Your spreadsheets never touch our servers. No data upload, no cloud processing, no retention.</p>
           <p><strong>SheetBrain:</strong> Requires uploading files to their cloud infrastructure for analysis. Data passes through their servers.</p>
         </article>
 
         <article class="comparison-card">
-          <h3>⚡ Performance</h3>
+          <h3><span aria-hidden="true">⚡</span> Performance</h3>
           <p><strong>Spreadsheet Health Checker:</strong> Web Workers for CSV (Papa Parse), optimized SheetJS for Excel. 50 MB files process in seconds. No network latency.</p>
           <p><strong>SheetBrain:</strong> Limited by upload speed and server queue times. 10 MB cap restricts larger workbooks.</p>
         </article>
 
         <article class="comparison-card">
-          <h3>🔍 Detection Depth</h3>
+          <h3><span aria-hidden="true">🔍</span> Detection Depth</h3>
           <p><strong>Spreadsheet Health Checker:</strong> 30+ checks across formulas, data quality, and structure. Circular reference detection with full chain display. Inconsistent formula detection across rows.</p>
           <p><strong>SheetBrain:</strong> Focuses primarily on formula errors. Limited data quality and structural checks.</p>
         </article>
 
         <article class="comparison-card">
-          <h3>📊 Reporting & Export</h3>
+          <h3><span aria-hidden="true">📊</span> Reporting & Export</h3>
           <p><strong>Spreadsheet Health Checker:</strong> Interactive HTML report with severity filters, search, CSV export, PDF export (Pro). 0-100 health score with letter grade.</p>
           <p><strong>SheetBrain:</strong> Basic report view. Limited export options.</p>
         </article>
@@ -119,7 +119,7 @@ import Layout from '../../layouts/Layout.astro';
     .main { min-height: 100vh; }
     
     .compare-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
       color: white;
       padding: 4rem 2rem;
       text-align: center;
@@ -138,8 +138,8 @@ import Layout from '../../layouts/Layout.astro';
     }
     
     .comparison-table {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       overflow: hidden;
     }
@@ -147,20 +147,20 @@ import Layout from '../../layouts/Layout.astro';
     .table-header {
       display: grid;
       grid-template-columns: 250px 1fr 1fr;
-      background: #1f2937;
+      background: var(--gray-900);
       color: white;
       font-weight: 600;
     }
     
-    .col { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; }
+    .col { padding: 1rem 1.5rem; border-bottom: 1px solid var(--color-border); }
     .table-header .col { border-bottom: none; }
     
     .table-row { display: grid; grid-template-columns: 250px 1fr 1fr; }
-    .table-row:nth-child(even) .col { background: #f9fafb; }
+    .table-row:nth-child(even) .col { background: var(--color-bg-subtle); }
     
-    .col.feature { font-weight: 500; color: #374151; background: #f9fafb; }
-    .col.us.highlight { background: #f0fdf4; }
-    .col.us strong { color: #166534; }
+    .col.feature { font-weight: 500; color: var(--color-text-secondary); background: var(--color-bg-subtle); }
+    .col.us.highlight { background: var(--color-success-bg); }
+    .col.us strong { color: var(--color-success-text); }
     
     .detailed-comparison {
       max-width: 1000px;
@@ -168,7 +168,7 @@ import Layout from '../../layouts/Layout.astro';
       padding: 0 2rem;
     }
     
-    .detailed-comparison h2 { font-size: 1.75rem; margin-bottom: 2rem; color: #1f2937; }
+    .detailed-comparison h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); }
     
     .comparison-grid {
       display: grid;
@@ -177,30 +177,30 @@ import Layout from '../../layouts/Layout.astro';
     }
     
     .comparison-card {
-      background: white;
-      border: 1px solid #e5e7eb;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
       padding: 1.5rem;
     }
     
-    .comparison-card h3 { margin: 0 0 1rem; font-size: 1.125rem; color: #1f2937; }
-    .comparison-card p { margin: 0.75rem 0; color: #4b5563; line-height: 1.6; font-size: 0.9375rem; }
-    .comparison-card strong { color: #1f2937; }
+    .comparison-card h3 { margin: 0 0 1rem; font-size: 1.125rem; color: var(--color-text); }
+    .comparison-card p { margin: 0.75rem 0; color: var(--color-text-secondary); line-height: 1.6; font-size: 0.9375rem; }
+    .comparison-card strong { color: var(--color-text); }
     
     .cta-section {
       text-align: center;
       padding: 4rem 2rem;
-      background: #f9fafb;
-      border-top: 1px solid #e5e7eb;
+      background: var(--color-bg-subtle);
+      border-top: 1px solid var(--color-border);
     }
     
-    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: #1f2937; }
-    .cta-section p { color: #6b7280; margin: 0 0 2rem; font-size: 1.125rem; }
+    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: var(--color-text); }
+    .cta-section p { color: var(--color-text-muted); margin: 0 0 2rem; font-size: 1.125rem; }
     
     .cta-btn {
       display: inline-block;
       padding: 1rem 2.5rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
       color: white;
       border-radius: 8px;
       font-weight: 600;
