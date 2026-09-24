@@ -192,6 +192,8 @@ export function runFormulaChecks(parsed: ParsedFile): Finding[] {
 
     sheetFindings.push(...detectCircularReferences(sheet.cells));
     sheetFindings.push(...checkInconsistentFormulas(sheet.cells));
+    sheetFindings.push(...checkCrossSheetReferences(sheet, parsed));
+    sheetFindings.push(...checkNamedRanges(sheet, parsed));
     
     findings.push(...sheetFindings);
   });

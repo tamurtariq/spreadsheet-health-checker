@@ -228,3 +228,245 @@ export function getTierLimits(tier: 'free' | 'pro' | 'team') {
     team: { scansPerMonth: -1, maxFileSizeMB: 50, diffChecker: true, pdfExport: true, seats: 5 },
   }[tier];
 }
+
+export interface ApiKey {
+  id: string;
+  userId: string;
+  name: string;
+  prefix: string;
+  rateLimit: number;
+  lastUsedAt?: number;
+  expiresAt?: number;
+  createdAt: number;
+}
+
+export interface TeamMember {
+  id: string;
+  teamId: string;
+  userId: string;
+  email: string;
+  role: 'owner' | 'admin' | 'member';
+  status: 'pending' | 'active' | 'rejected';
+  invitedBy: string;
+  invitedAt: number;
+  acceptedAt?: number;
+}
+
+export async function createApiKey(
+  db: D1Database,
+  userId: string,
+  name: string,
+  rateLimit = 100,
+  expiresInDays?: number
+): Promise<{ apiKey: ApiKey; rawKey: string }> {
+  const id = generateId();
+  const now = Date.now();
+  const rawKey = `shc_${generateToken()}`;
+  const keyHash = await hashKey(rawKey);
+  const prefix = rawKey.slice(0, 8);
+  const expiresAt = expiresInDays ? now + expiresInDays * 24 * 60 * 60 * 1000 : null;
+
+  await db.prepare(
+    `INSERT INTO api_keys (id, user_id, name, key_hash, prefix, rate_limit, expires_at, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(id, userId, name, keyHash, prefix, rateLimit, expiresAt, now).run();
+
+  return {
+    apiKey: { id, userId, name, prefix, rateLimit, expiresAt, createdAt: now },
+    rawKey,
+  };
+}
+
+export async function verifyApiKey(db: D1Database, rawKey: string): Promise<ApiKey | null> {
+  const prefix = rawKey.slice(0, 8);
+  const result = await db.prepare(
+    `SELECT id, user_id as userId, name, prefix, rate_limit as rateLimit, 
+            last_used_at as lastUsedAt, expires_at as expiresAt, created_at as createdAt
+     FROM api_keys WHERE prefix = ?`
+  ).bind(prefix).first();
+
+  if (!result) return null;
+
+  const isValid = await verifyKey(rawKey, result.key_hash);
+  if (!isValid) return null;
+
+  if (result.expiresAt && result.expiresAt < Date.now()) return null;
+
+  await db.prepare(
+    'UPDATE api_keys SET last_used_at = ? WHERE id = ?'
+  ).bind(Date.now(), result.id).run();
+
+  return {
+    id: result.id,
+    userId: result.userId,
+    name: result.name,
+    prefix: result.prefix,
+    rateLimit: result.rateLimit,
+    lastUsedAt: result.lastUsedAt,
+    expiresAt: result.expiresAt,
+    createdAt: result.createdAt,
+  };
+}
+
+export async function listApiKeys(db: D1Database, userId: string): Promise<ApiKey[]> {
+  const results = await db.prepare(
+    `SELECT id, user_id as userId, name, prefix, rate_limit as rateLimit, 
+            last_used_at as lastUsedAt, expires_at as expiresAt, created_at as createdAt
+     FROM api_keys WHERE user_id = ? ORDER BY created_at DESC`
+  ).bind(userId).all();
+
+  return results.results.map(r => ({
+    id: r.id,
+    userId: r.userId,
+    name: r.name,
+    prefix: r.prefix,
+    rateLimit: r.rateLimit,
+    lastUsedAt: r.lastUsedAt,
+    expiresAt: r.expiresAt,
+    createdAt: r.createdAt,
+  }));
+}
+
+export async function deleteApiKey(db: D1Database, userId: string, keyId: string): Promise<boolean> {
+  const result = await db.prepare(
+    'DELETE FROM api_keys WHERE id = ? AND user_id = ?'
+  ).bind(keyId, userId).run();
+
+  return (result.meta.changes || 0) > 0;
+}
+
+export async function checkRateLimit(kv: KVNamespace, prefix: string, limit: number, windowMs: number): Promise<boolean> {
+  const key = `ratelimit:${prefix}:${Math.floor(Date.now() / windowMs)}`;
+  const current = await kv.get(key);
+  const count = current ? parseInt(current, 10) + 1 : 1;
+
+  if (count > limit) return false;
+
+  await kv.put(key, String(count), { expirationTtl: Math.ceil(windowMs / 1000) + 60 });
+  return true;
+}
+
+async function hashKey(key: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(key);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyKey(key: string, hash: string): Promise<boolean> {
+  const keyHash = await hashKey(key);
+  return keyHash === hash;
+}
+
+export async function inviteTeamMember(
+  db: D1Database,
+  teamId: string,
+  email: string,
+  role: 'admin' | 'member',
+  invitedBy: string
+): Promise<TeamMember> {
+  const id = generateId();
+  const now = Date.now();
+
+  const existing = await db.prepare(
+    'SELECT id FROM team_members WHERE team_id = ? AND email = ?'
+  ).bind(teamId, email.toLowerCase()).first();
+
+  if (existing) {
+    throw new Error('Member already invited or part of team');
+  }
+
+  await db.prepare(
+    `INSERT INTO team_members (id, team_id, email, role, status, invited_by, invited_at)
+     VALUES (?, ?, ?, ?, 'pending', ?, ?)`
+  ).bind(id, teamId, email.toLowerCase(), role, invitedBy, now).run();
+
+  return { id, teamId, userId: '', email: email.toLowerCase(), role, status: 'pending', invitedBy, invitedAt: now };
+}
+
+export async function acceptTeamInvite(db: D1Database, email: string, userId: string): Promise<TeamMember | null> {
+  const result = await db.prepare(
+    `UPDATE team_members SET user_id = ?, status = 'active', accepted_at = ? WHERE email = ? AND status = 'pending'`
+  ).bind(userId, Date.now(), email.toLowerCase()).run();
+
+  if ((result.meta.changes || 0) === 0) return null;
+
+  const member = await db.prepare(
+    `SELECT id, team_id as teamId, user_id as userId, email, role, status, invited_by as invitedBy, invited_at as invitedAt, accepted_at as acceptedAt
+     FROM team_members WHERE email = ?`
+  ).bind(email.toLowerCase()).first();
+
+  return member ? {
+    id: member.id,
+    teamId: member.teamId,
+    userId: member.userId,
+    email: member.email,
+    role: member.role,
+    status: member.status,
+    invitedBy: member.invitedBy,
+    invitedAt: member.invitedAt,
+    acceptedAt: member.acceptedAt,
+  } : null;
+}
+
+export async function getTeamMembers(db: D1Database, teamId: string): Promise<TeamMember[]> {
+  const results = await db.prepare(
+    `SELECT id, team_id as teamId, user_id as userId, email, role, status, invited_by as invitedBy, invited_at as invitedAt, accepted_at as acceptedAt
+     FROM team_members WHERE team_id = ? ORDER BY invited_at DESC`
+  ).bind(teamId).all();
+
+  return results.results.map(r => ({
+    id: r.id,
+    teamId: r.teamId,
+    userId: r.userId,
+    email: r.email,
+    role: r.role,
+    status: r.status,
+    invitedBy: r.invitedBy,
+    invitedAt: r.invitedAt,
+    acceptedAt: r.acceptedAt,
+  }));
+}
+
+export async function removeTeamMember(db: D1Database, teamId: string, memberId: string): Promise<boolean> {
+  const result = await db.prepare(
+    'DELETE FROM team_members WHERE id = ? AND team_id = ?'
+  ).bind(memberId, teamId).run();
+
+  return (result.meta.changes || 0) > 0;
+}
+
+export async function updateMemberRole(db: D1Database, teamId: string, memberId: string, role: 'admin' | 'member'): Promise<boolean> {
+  const result = await db.prepare(
+    'UPDATE team_members SET role = ? WHERE id = ? AND team_id = ?'
+  ).bind(role, memberId, teamId).run();
+
+  return (result.meta.changes || 0) > 0;
+}
+
+export async function getUserTeam(db: D1Database, userId: string): Promise<{ teamId: string; role: string } | null> {
+  const result = await db.prepare(
+    `SELECT team_id as teamId, role FROM team_members WHERE user_id = ? AND status = 'active'`
+  ).bind(userId).first();
+
+  return result ? { teamId: result.teamId, role: result.role } : null;
+}
+
+export interface KVNamespace {
+  get(key: string, options?: { type?: 'text' | 'json' | 'arrayBuffer' | 'stream' }): Promise<string | null>;
+  put(key: string, value: string, options?: { expirationTtl?: number; expiration?: number }): Promise<void>;
+  delete(key: string): Promise<void>;
+  list(options?: { prefix?: string; limit?: number; cursor?: string }): Promise<{ keys: Array<{ name: string; expiration?: number; metadata?: unknown }>; list_complete: boolean; cursor?: string }>;
+}
+
+export async function checkRateLimit(kv: KVNamespace, prefix: string, limit: number, windowMs: number): Promise<boolean> {
+  const key = `ratelimit:${prefix}:${Math.floor(Date.now() / windowMs)}`;
+  const current = await kv.get(key);
+  const count = current ? parseInt(current, 10) + 1 : 1;
+
+  if (count > limit) return false;
+
+  await kv.put(key, String(count), { expirationTtl: Math.ceil(windowMs / 1000) + 60 });
+  return true;
+}
