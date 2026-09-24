@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { HealthReport as HealthReportType, Finding } from '../lib/checks/types';
 import { sortFindings, filterFindings, exportFindingsCSV } from '../lib/engine';
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import '../styles/components.css';
 
 interface TierLimits {
@@ -143,6 +142,8 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
 
   const handleExportPDF = async () => {
     try {
+      const { PDFDocument, StandardFonts, rgb } = await import('pdf-lib');
+      
       const pdfDoc = await PDFDocument.create();
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -152,7 +153,7 @@ export default function HealthReport({ report, onNewAnalysis }: HealthReportProp
       const margin = 50;
       let y = height - margin;
       
-      const drawText = (text: string, x: number, y: number, fontSize = 10, bold = false, color = rgb(0, 0, 0)) => {
+      const drawText = (text: string, x: number, y: number, fontSize = 10, bold = false, color: any) => {
         page.drawText(text, {
           x,
           y,
