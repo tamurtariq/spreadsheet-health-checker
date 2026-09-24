@@ -1,30 +1,44 @@
 import { onRequest } from '@cloudflare/pages-functions';
 import { getSession, getUserById, getSubscription, getScanCounter, getTierLimits } from '../../lib/auth';
 
+// Every caller (see src/lib/useAuthContext.ts) relies on `limits`/`usage` being
+// present even when signed out, so anonymous visitors get free-tier defaults
+// rather than a shape with those fields missing.
+function anonymousResponse(extraHeaders?: Record<string, string>): Response {
+  const limits = getTierLimits('free');
+  return new Response(JSON.stringify({
+    user: null,
+    subscription: { tier: 'free', status: 'active' },
+    usage: {
+      scansUsed: 0,
+      scansRemaining: limits.scansPerMonth,
+      scansLimit: limits.scansPerMonth,
+    },
+    limits,
+  }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json', ...extraHeaders },
+  });
+}
+
 export const onRequestGet: PagesFunction = async (context) => {
   const { request, env } = context;
-  
+
   try {
     const cookieHeader = request.headers.get('Cookie');
     const sessionId = cookieHeader?.match(/session=([^;]+)/)?.[1];
-    
+
     if (!sessionId) {
-      return new Response(JSON.stringify({ user: null }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return anonymousResponse();
     }
-    
+
     const session = await getSession(env.spreadsheet_health_checker, sessionId);
-    
+
     if (!session) {
       const cookie = 'session=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0';
-      return new Response(JSON.stringify({ user: null }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json', 'Set-Cookie': cookie },
-      });
+      return anonymousResponse({ 'Set-Cookie': cookie });
     }
-    
+
     const user = await getUserById(env.spreadsheet_health_checker, session.userId);
     const subscription = await getSubscription(env.spreadsheet_health_checker, session.userId);
     const scanCounter = await getScanCounter(env.spreadsheet_health_checker, session.userId);

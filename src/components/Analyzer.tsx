@@ -1,24 +1,12 @@
 import { useState, useCallback } from 'react';
 import FileUpload from './FileUpload';
 import HealthReport from './HealthReport';
+import { useAuthContext } from '../lib/useAuthContext';
 import type { ParsedFile } from '../lib/parser';
 import type { HealthReport as HealthReportType } from '../lib/checks/types';
 
-interface TierLimits {
-  scansPerMonth: number;
-  maxFileSizeMB: number;
-  diffChecker: boolean;
-  pdfExport: boolean;
-  seats: number;
-}
-
-interface AnalyzerProps {
-  limits: TierLimits;
-  scansUsed: number;
-  scansRemaining: number;
-}
-
-export default function Analyzer({ limits, scansUsed, scansRemaining }: AnalyzerProps) {
+export default function Analyzer() {
+  const { limits, scansRemaining } = useAuthContext();
   const [report, setReport] = useState<{ parsed: ParsedFile; report: HealthReportType } | null>(null);
   const [limitError, setLimitError] = useState<string | null>(null);
   const [isTracking, setIsTracking] = useState(false);
@@ -91,11 +79,9 @@ export default function Analyzer({ limits, scansUsed, scansRemaining }: Analyzer
           )}
         </div>
       ) : (
-        <FileUpload 
-          onAnalyzeComplete={handleAnalyzeComplete} 
+        <FileUpload
+          onAnalyzeComplete={handleAnalyzeComplete}
           maxFileSize={limits.maxFileSizeMB * 1024 * 1024}
-          scansRemaining={scansRemaining}
-          totalScans={limits.scansPerMonth}
         />
       )}
     </div>

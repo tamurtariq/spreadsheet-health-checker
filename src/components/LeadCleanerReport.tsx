@@ -6,6 +6,7 @@ import '../styles/components.css';
 interface LeadCleanerReportProps {
   result: CleaningResult;
   fileName: string;
+  isPaid: boolean;
   onOverrideRole: (col: number, role: FieldRole) => void;
   onNewCleaning: () => void;
 }
@@ -52,7 +53,7 @@ function ActionCard({ action }: { action: CleaningAction }) {
   );
 }
 
-export default function LeadCleanerReport({ result, fileName, onOverrideRole, onNewCleaning }: LeadCleanerReportProps) {
+export default function LeadCleanerReport({ result, fileName, isPaid, onOverrideRole, onNewCleaning }: LeadCleanerReportProps) {
   const [showAllActions, setShowAllActions] = useState(false);
 
   const visibleActions = useMemo(
@@ -106,6 +107,16 @@ export default function LeadCleanerReport({ result, fileName, onOverrideRole, on
         </div>
       </div>
 
+      {!isPaid && (
+        <div className="free-tier-notice">
+          <strong>Free plan:</strong> email validation and whitespace trimming only.{' '}
+          <button className="upgrade-link" onClick={() => alert('Upgrade flow coming soon')}>
+            Upgrade to Pro
+          </button>{' '}
+          for deduplication, phone formatting, name/company standardization, and CSV export.
+        </div>
+      )}
+
       <div className="column-mapping">
         <h3>Column Mapping</h3>
         <p className="column-mapping-hint">
@@ -130,14 +141,24 @@ export default function LeadCleanerReport({ result, fileName, onOverrideRole, on
       </div>
 
       <div className="report-actions">
-        <button className="export-btn" onClick={handleDownload}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          Download Cleaned CSV
-        </button>
+        {isPaid ? (
+          <button className="export-btn" onClick={handleDownload}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Cleaned CSV
+          </button>
+        ) : (
+          <button className="export-btn" onClick={() => alert('Upgrade to Pro to export your cleaned file')}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Upgrade to Download CSV
+          </button>
+        )}
         <button className="new-analysis-btn" onClick={onNewCleaning}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="12" y1="5" x2="12" y2="19" />

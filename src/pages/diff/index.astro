@@ -11,10 +11,7 @@ import ToolsNav from '../../components/ToolsNav.astro';
     </header>
 
     <div class="diff-page">
-      <DiffChecker 
-        client:load
-        limits={{ diffChecker: false, maxFileSizeMB: 50 }}
-      />
+      <DiffChecker client:load />
     </div>
   </main>
 
