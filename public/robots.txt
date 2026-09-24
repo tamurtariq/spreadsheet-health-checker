@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /email-prefs
+Disallow: /auth/verify
+Disallow: /api/
+
+Sitemap: https://tools.foviq.com/sitemap-index.xml

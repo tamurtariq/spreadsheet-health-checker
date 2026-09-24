@@ -31,6 +31,14 @@ Production URL: https://tools.foviq.com/
   team_members, etc.).
 - `src/content/blog/*.md` — blog content collection (SEO), schema in
   `src/content.config.ts`.
+- `public/favicon.svg` (+ `.ico`/PNG/`site.webmanifest` variants) — the
+  FOVIQ Tools brand mark (gradient badge matching the site's `#667eea` →
+  `#764ba2` palette), referenced from `Layout.astro`'s `<head>`. `astro.config.mjs`
+  sets `site` and runs `@astrojs/sitemap` with a `filter` excluding
+  authenticated/utility pages (`/dashboard`, `/login`, `/email-prefs`,
+  `/auth/verify`) from the generated `sitemap-index.xml`; `public/robots.txt`
+  points to it. Individual `/blog/[slug]` posts aren't in the sitemap since
+  Astro can't enumerate dynamic SSR routes without `prerender = true`.
 
 ### Astro component prop gotcha (caused a full site outage — see below)
 
