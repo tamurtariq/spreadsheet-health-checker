@@ -31,6 +31,14 @@ Production URL: https://tools.foviq.com/
   team_members, etc.).
 - `src/content/blog/*.md` — blog content collection (SEO), schema in
   `src/content.config.ts`.
+- `public/favicon.svg` (+ `.ico`/PNG/`site.webmanifest` variants) — the
+  FOVIQ Tools brand mark (gradient badge matching the site's `#667eea` →
+  `#764ba2` palette), referenced from `Layout.astro`'s `<head>`. `astro.config.mjs`
+  sets `site` and runs `@astrojs/sitemap` with a `filter` excluding
+  authenticated/utility pages (`/dashboard`, `/login`, `/email-prefs`,
+  `/auth/verify`) from the generated `sitemap-index.xml`; `public/robots.txt`
+  points to it. Individual `/blog/[slug]` posts aren't in the sitemap since
+  Astro can't enumerate dynamic SSR routes without `prerender = true`.
 
 ### Astro component prop gotcha (caused a full site outage — see below)
 
@@ -71,6 +79,31 @@ API doesn't expose Cloudflare's build log text, so this can't be diagnosed
 from PR check output alone — get the log from the Cloudflare dashboard link
 in the PR's deploy comment.
 
+### React island required-props gotcha (Analyzer.tsx crashed on every SSR render)
+
+A framework component invoked from `.astro` with no attributes (e.g.
+`<Analyzer client:load />`) receives an **empty props object**, not
+anything auto-populated from server state. `Analyzer.tsx` declared
+`limits`/`scansUsed`/`scansRemaining` as required props and dereferenced
+`limits.scansPerMonth` unconditionally at the top of the function body —
+since `index.astro` never actually passed those props, this threw
+`TypeError: Cannot read properties of undefined` on every single SSR
+render of the homepage (confirmed by rendering the component directly via
+`react-dom/server`; this had been broken since the auth system was added
+and was independent of the `Layout.astro` outage above).
+
+The fix, and the pattern to follow for any island that needs the signed-in
+user's real data: don't require it as a prop from the parent `.astro` page
+(this codebase has no server-side data-fetching in `.astro` frontmatter
+anywhere — every page fetches client-side after mount, e.g.
+`dashboard.astro`'s `loadAuth()`/`loadApiKeys()` scripts). Instead use
+`src/lib/useAuthContext.ts`, a hook that fetches `/api/auth/me` on mount
+and returns safe free-tier defaults (`loading: true`) until it resolves.
+Because React effects never run during SSR, a component using this hook
+always renders successfully server-side with those defaults instead of
+crashing. `Analyzer.tsx`, `DiffChecker.tsx`, and `LeadCleaner.tsx` all use
+it now instead of taking `limits` as a required prop.
+
 ### Multi-tool platform (tools.foviq.com)
 
 This project is meant to host more than one tool (the health checker today;
@@ -95,12 +128,24 @@ auth, billing scaffolding, and UI primitives. Decisions made so far:
   only if that product decision changes.
 - **Billing is not actually wired up**: `subscriptions.lemon_squeezy_id` is a
   schema column only — there is no checkout or webhook integration anywhere
-  in `functions/api/**`. The upgrade buttons in `dashboard.astro` and
-  `Analyzer.tsx` are `alert('Upgrade flow coming soon')` placeholders. Don't
-  assume Pro/Team gating can actually be purchased until this is built.
+  in `functions/api/**`. The upgrade buttons across the app are
+  `alert('Upgrade flow coming soon')` placeholders. Tier *gating* is real
+  (see below) — a user's tier is read from their actual subscription record
+  — but there is no way for anyone to actually change that record by paying.
+  Don't assume Pro/Team gating can actually be purchased until checkout is
+  built.
 - **Routing convention**: each tool gets a root-level slug (e.g.
   `/lead-csv-cleaner`), not a `/tools/*` namespace, to avoid any risk to the
   existing homepage's SEO.
+- **Lead Cleaner's free/paid split**: `cleanFile()`'s `advancedCleaning`
+  option (default `true`) gates phone normalization, name/company
+  standardization, and deduplication — free-tier callers pass
+  `advancedCleaning: false` and get email validation + whitespace trimming
+  only (whitespace trimming is the fallback path for every role when
+  advanced cleaning is off). CSV export is also gated on the paid tier in
+  `LeadCleanerReport.tsx`. This mirrors `getTierLimits()`'s existing
+  free/pro/team split rather than adding new granular `TierLimits` fields,
+  since none of the existing fields map to lead-cleaning features.
 
 ## Development
 

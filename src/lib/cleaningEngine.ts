@@ -21,6 +21,14 @@ export interface CleaningOptions {
   removeDuplicateEmails?: boolean;
   /** Manual role override by column index, for when auto-detection guesses wrong. */
   columnOverrides?: Record<number, FieldRole>;
+  /**
+   * Default true. Gates the paid-tier cleaning actions (phone normalization,
+   * name/company standardization) - email validation and whitespace trimming
+   * always run regardless, matching the free tier's "basic cleaning" scope.
+   * When false, phone/name/company columns still get whitespace-trimmed but
+   * skip their specialized transforms.
+   */
+  advancedCleaning?: boolean;
 }
 
 function buildCellIndex(cells: Cell[]): Map<string, Cell> {
@@ -70,6 +78,7 @@ export function cleanFile(parsed: ParsedFile, options: CleaningOptions = {}): Cl
 
   const cellIndex = buildCellIndex(sheet.cells);
   const dataStartRow = hasHeaderRow ? 1 : 0;
+  const advancedCleaning = options.advancedCleaning ?? true;
 
   const actions: CleaningAction[] = [];
   const rowsWithChanges = new Set<number>();
@@ -84,7 +93,7 @@ export function cleanFile(parsed: ParsedFile, options: CleaningOptions = {}): Cl
 
     mappings.forEach((mapping, i) => {
       const raw = rawValues[i];
-      outRow.push(cleanCell(raw, mapping, row, actions, rowsWithChanges));
+      outRow.push(cleanCell(raw, mapping, row, actions, rowsWithChanges, advancedCleaning));
     });
 
     sourceRowForOutputRow.push(row);
@@ -92,7 +101,7 @@ export function cleanFile(parsed: ParsedFile, options: CleaningOptions = {}): Cl
   }
 
   const emailColIndex = mappings.findIndex(m => m.role === 'email');
-  const removeDuplicates = options.removeDuplicateEmails ?? true;
+  const removeDuplicates = advancedCleaning && (options.removeDuplicateEmails ?? true);
   const removedRows: RemovedRow[] = [];
   let finalRows = cleanedRows;
 
@@ -135,7 +144,8 @@ function cleanCell(
   mapping: ColumnMapping,
   row: number,
   actions: CleaningAction[],
-  rowsWithChanges: Set<number>
+  rowsWithChanges: Set<number>,
+  advancedCleaning: boolean
 ): CleanedCell {
   const record = (type: CleaningActionType, before: string, after: string, message: string) => {
     actions.push({
@@ -151,6 +161,8 @@ function cleanCell(
     if (before !== after) rowsWithChanges.add(row);
   };
 
+  // Email validation always runs (free tier) - only the paid-tier transforms
+  // below are gated on advancedCleaning.
   if (mapping.role === 'email') {
     const before = raw === undefined || raw === null ? '' : String(raw);
     const result = cleanEmail(before);
@@ -160,7 +172,7 @@ function cleanCell(
     return result.value;
   }
 
-  if (mapping.role === 'phone') {
+  if (mapping.role === 'phone' && advancedCleaning) {
     const before = raw === undefined || raw === null ? '' : String(raw);
     const result = cleanPhone(typeof raw === 'number' ? raw : before);
     if (result.changed) record('formatted', before, result.value, 'Normalized phone number');
@@ -168,20 +180,22 @@ function cleanCell(
     return result.value;
   }
 
-  if (mapping.role === 'firstName' || mapping.role === 'lastName' || mapping.role === 'fullName') {
+  if ((mapping.role === 'firstName' || mapping.role === 'lastName' || mapping.role === 'fullName') && advancedCleaning) {
     const before = raw === undefined || raw === null ? '' : String(raw);
     const result = capitalizeWords(before);
     if (result.changed) record('capitalized', before, result.value, 'Capitalized name');
     return result.value;
   }
 
-  if (mapping.role === 'company') {
+  if (mapping.role === 'company' && advancedCleaning) {
     const before = raw === undefined || raw === null ? '' : String(raw);
     const result = cleanCompanyName(before);
     if (result.changed) record('trimmed', before, result.value, 'Cleaned company name');
     return result.value;
   }
 
+  // Whitespace trimming (free tier) is the fallback for every other column,
+  // including phone/name/company when advancedCleaning is off.
   if (typeof raw === 'string') {
     const result = cleanWhitespace(raw);
     if (result.changed) record('trimmed', raw, result.value, 'Trimmed whitespace');

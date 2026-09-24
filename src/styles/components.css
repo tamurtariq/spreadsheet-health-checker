@@ -614,3 +614,123 @@
   background: #f9fafb;
   border-color: #667eea;
 }
+
+/*
+ * Scan-limit and Pro-feature gating states, shared by Analyzer.tsx,
+ * DiffChecker.tsx and LeadCleaner.tsx. These classes were referenced by
+ * Analyzer.tsx/DiffChecker.tsx with no matching CSS anywhere in the project
+ * (dashboard.astro has its own scoped .upgrade-btn, which doesn't reach
+ * React components) - both screens were rendering completely unstyled.
+ */
+.limit-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+}
+
+.limit-error svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.limit-error span {
+  flex: 1;
+}
+
+.dismiss-btn {
+  padding: 0.375rem 0.75rem;
+  background: white;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.dismiss-btn:hover {
+  background: #fef2f2;
+}
+
+.limit-reached,
+.feature-locked {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  color: #6b7280;
+}
+
+.limit-reached svg,
+.feature-locked svg {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 1rem;
+  color: #9ca3af;
+}
+
+.limit-reached h3,
+.feature-locked h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  color: #1f2937;
+}
+
+.limit-reached p,
+.feature-locked p {
+  margin: 0 0 0.5rem;
+}
+
+.reset-info {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.upgrade-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.upgrade-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.free-tier-notice {
+  margin-bottom: 1.5rem;
+  padding: 0.875rem 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  color: #1e40af;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.upgrade-link {
+  padding: 0;
+  background: none;
+  border: none;
+  color: #1e40af;
+  font-size: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}

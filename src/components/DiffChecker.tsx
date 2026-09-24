@@ -1,18 +1,13 @@
 import { useState, useCallback } from 'react';
 import { parseFile } from '../lib/parser';
 import { diffFiles, formatDiffForDisplay } from '../lib/diff';
+import { useAuthContext } from '../lib/useAuthContext';
 import type { DiffResult, CellDiff, ParsedFile } from '../lib/parser';
 import '../styles/components.css';
 
-interface DiffCheckerProps {
-  limits: {
-    diffChecker: boolean;
-    maxFileSizeMB: number;
-  };
-  onUpgrade?: () => void;
-}
-
-export default function DiffChecker({ limits, onUpgrade }: DiffCheckerProps) {
+export default function DiffChecker() {
+  const { limits } = useAuthContext();
+  const onUpgrade = () => alert('Upgrade flow coming soon');
   const [file1, setFile1] = useState<File | null>(null);
   const [file2, setFile2] = useState<File | null>(null);
   const [parsed1, setParsed1] = useState<ParsedFile | null>(null);
