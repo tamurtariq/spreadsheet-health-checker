@@ -26,30 +26,34 @@ const CATEGORY_ICONS = {
   structure: '🏗️',
 };
 
+const GRADE_COLORS: Record<'A' | 'B' | 'C' | 'D' | 'F', { bg: string; text: string }> = {
+  A: { bg: '#dcfce7', text: '#166534' },
+  B: { bg: '#dbeafe', text: '#1e40af' },
+  C: { bg: '#fef9c3', text: '#854d0e' },
+  D: { bg: '#ffedd5', text: '#9a3412' },
+  F: { bg: '#fee2e2', text: '#991b1b' },
+};
+
 function GradeBadge({ grade }: { grade: 'A' | 'B' | 'C' | 'D' | 'F' }) {
-  const colors = {
-    A: 'bg-green-100 text-green-800',
-    B: 'bg-blue-100 text-blue-800',
-    C: 'bg-yellow-100 text-yellow-800',
-    D: 'bg-orange-100 text-orange-800',
-    F: 'bg-red-100 text-red-800',
-  };
+  const { bg, text } = GRADE_COLORS[grade];
   return (
-    <span className={`px-3 py-1 rounded-full text-lg font-bold ${colors[grade]}`}>
+    <span style={{ padding: '0.25rem 0.75rem', borderRadius: 9999, fontSize: '1.125rem', fontWeight: 700, background: bg, color: text }}>
       Grade {grade}
     </span>
   );
 }
 
+const SEVERITY_BADGE_COLORS: Record<Finding['severity'], { bg: string; text: string }> = {
+  critical: { bg: '#fee2e2', text: '#991b1b' },
+  high: { bg: '#ffedd5', text: '#9a3412' },
+  medium: { bg: '#fef9c3', text: '#854d0e' },
+  low: { bg: '#dcfce7', text: '#166534' },
+};
+
 function SeverityBadge({ severity }: { severity: Finding['severity'] }) {
-  const colors = {
-    critical: 'bg-red-100 text-red-800',
-    high: 'bg-orange-100 text-orange-800',
-    medium: 'bg-yellow-100 text-yellow-800',
-    low: 'bg-green-100 text-green-800',
-  };
+  const { bg, text } = SEVERITY_BADGE_COLORS[severity];
   return (
-    <span className={`px-2 py-0.5 rounded text-xs font-medium uppercase ${colors[severity]}`}>
+    <span style={{ padding: '0.125rem 0.5rem', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500, textTransform: 'uppercase', background: bg, color: text }}>
       {severity}
     </span>
   );
@@ -58,7 +62,7 @@ function SeverityBadge({ severity }: { severity: Finding['severity'] }) {
 function CategoryBadge({ category }: { category: Finding['category'] }) {
   const labels = { formula: 'Formula', data: 'Data Quality', structure: 'Structure' };
   return (
-    <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700">
+    <span style={{ padding: '0.125rem 0.5rem', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500, background: '#f3f4f6', color: '#374151' }}>
       {labels[category]}
     </span>
   );

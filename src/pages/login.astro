@@ -2,12 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Login - Spreadsheet Health Checker">
+<Layout title="Login - FOVIQ Tools">
   <main class="main">
     <div class="login-container">
       <div class="login-card">
         <div class="login-header">
-          <h1>Spreadsheet Health Checker</h1>
+          <h1>FOVIQ Tools</h1>
           <p>Sign in to analyze your spreadsheets</p>
         </div>
         
@@ -27,7 +27,7 @@ import Layout from '../layouts/Layout.astro';
           </button>
         </form>
         
-        <div id="message" class="message hidden"></div>
+        <div id="message" class="message hidden" role="status" aria-live="polite"></div>
         
         <p class="login-note">
           We'll send a one-time login link to your email. No password needed.

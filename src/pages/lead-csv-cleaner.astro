@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ToolsNav from '../components/ToolsNav.astro';
+import LeadCleaner from '../components/LeadCleaner.tsx';
+---
+
+<Layout title="Lead CSV Cleaner - FOVIQ Tools">
+  <main class="main">
+    <header class="tool-header">
+      <ToolsNav theme="light" />
+      <div class="tool-intro">
+        <h1>Lead CSV Cleaner</h1>
+        <p class="tagline">Validate, normalize, and deduplicate lead lists so they're ready to import into your CRM — 100% client-side, zero data upload.</p>
+      </div>
+    </header>
+
+    <div class="cleaner-page">
+      <LeadCleaner client:load />
+    </div>
+  </main>
+
+  <style>
+    .main { min-height: 100vh; display: flex; flex-direction: column; }
+
+    .tool-header {
+      border-bottom: 1px solid #e5e7eb;
+      background: white;
+    }
+
+    .tool-intro {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem 2rem;
+    }
+
+    .tool-intro h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .tagline {
+      margin: 0;
+      font-size: 1rem;
+      color: #6b7280;
+      max-width: 640px;
+    }
+
+    .cleaner-page {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .cleaner-page { padding: 1rem; }
+    }
+  </style>
+</Layout>
