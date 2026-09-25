@@ -18,10 +18,17 @@ import ToolsNav from '../components/ToolsNav.astro';
           <span class="badge"><span aria-hidden="true">📊</span> CSV & Excel</span>
         </div>
         <div class="hero-cta">
-          <a href="/login" class="btn btn-primary btn-large">Start Free Analysis</a>
+          <a href="#analyzer" class="btn btn-primary btn-large">
+            Try It Free
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+          </a>
         </div>
       </div>
     </header>
+
+    <div class="analyzer-section" id="analyzer">
+      <Analyzer client:load />
+    </div>
 
     <section class="features">
       <div class="feature">
@@ -40,10 +47,6 @@ import ToolsNav from '../components/ToolsNav.astro';
         <p>Finds hidden rows/columns with data, oversized sheets, trailing empty rows/columns, and sparse data.</p>
       </div>
     </section>
-
-    <div class="analyzer-section">
-      <Analyzer client:load />
-    </div>
   </main>
 
   <style>
@@ -54,7 +57,7 @@ import ToolsNav from '../components/ToolsNav.astro';
     }
     
     .hero {
-      padding: 4rem 2rem;
+      padding: 3rem 2rem 2.5rem;
       text-align: center;
       background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
       color: white;
@@ -145,28 +148,52 @@ import ToolsNav from '../components/ToolsNav.astro';
     }
     
     .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
       padding: 0.5rem 1.25rem;
-      border-radius: 8px;
-      font-weight: 500;
+      border-radius: var(--radius-lg);
+      font-weight: 600;
       text-decoration: none;
       font-size: 0.875rem;
-      transition: all 0.2s;
+      transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
     }
-    
+
+    .btn:active {
+      transform: translateY(0) scale(0.97);
+    }
+
     .btn-primary {
       background: var(--color-surface);
       color: var(--brand-500);
+      box-shadow: var(--shadow-md);
     }
-    .btn-primary:hover { background: var(--gray-100); }
-    
+    .btn-primary:hover {
+      background: var(--gray-100);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
     .btn-large {
-      padding: 1rem 2rem;
+      padding: 1rem 2.25rem;
       font-size: 1.125rem;
     }
-    
-    .hero-cta { margin-top: 2rem; }
 
-    .analyzer-section { max-width: 800px; }
+    .btn-large svg {
+      width: 20px;
+      height: 20px;
+      animation: bounce-down 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce-down {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(3px); }
+    }
+
+    .hero-cta { margin-top: 1.75rem; }
+
+    .analyzer-section { max-width: 800px; scroll-margin-top: 1.5rem; }
 
     @media (max-width: 768px) {
       .hero h1 { font-size: 2rem; }

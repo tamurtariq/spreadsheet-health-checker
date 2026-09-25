@@ -95,10 +95,10 @@ export default function FileDropZone({
         <input
           type="file"
           id="file-input"
+          className="sr-only"
           accept={accept}
           onChange={handleFileChange}
           disabled={isProcessing}
-          style={{ display: 'none' }}
         />
 
         {file ? (
