@@ -66,4 +66,4 @@ Spreadsheet Health Checker runs all these checks automatically:
 3. **Regular audits** - Monthly health checks
 4. **Source control** - Track changes to critical sheets
 
-Run your free data quality check at [Spreadsheet Health Checker](/dashboard).
+Run your free data quality check at [Spreadsheet Health Checker](/spreadsheet-health-checker).

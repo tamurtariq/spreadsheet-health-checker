@@ -1,13 +1,17 @@
 ---
+import '../styles/components.css';
+
 interface Props {
+  /** Accepted for backward compatibility with existing call sites; the nav
+   * now renders a single unified style regardless of value. */
   theme?: 'hero' | 'light';
   logoText?: string;
 }
 
-const { theme = 'light', logoText = 'FOVIQ Tools' } = Astro.props;
+const { logoText = 'FOVIQ Tools' } = Astro.props;
 
 const TOOLS = [
-  { href: '/', label: 'Health Checker' },
+  { href: '/spreadsheet-health-checker', label: 'Health Checker' },
   { href: '/diff', label: 'Diff Checker' },
   { href: '/lead-csv-cleaner', label: 'Lead CSV Cleaner' },
 ];
@@ -16,8 +20,11 @@ const normalize = (path: string) => path.replace(/\/$/, '') || '/';
 const currentPath = normalize(Astro.url.pathname);
 ---
 
-<nav class="nav-bar" data-theme={theme}>
-  <a href="/" class="logo">{logoText}</a>
+<nav class="nav-bar">
+  <a href="/" class="logo">
+    <img src="/favicon.svg" alt="" width="26" height="26" />
+    <span>{logoText}</span>
+  </a>
   <div class="tools-links">
     {TOOLS.map(tool => (
       <a
@@ -28,25 +35,79 @@ const currentPath = normalize(Astro.url.pathname);
       </a>
     ))}
   </div>
-  <div id="nav-auth" class="nav-auth">
-    <a href="/login" class="btn btn-secondary">Sign In</a>
-    <a href="/login" class="btn btn-primary">Get Started Free</a>
+  <div class="nav-right">
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+      </svg>
+    </button>
+    <div id="nav-auth" class="nav-auth">
+      <a href="/login" class="btn btn-secondary btn-sm">Sign In</a>
+      <a href="/login" class="btn btn-primary btn-sm">Get Started Free</a>
+    </div>
   </div>
 </nav>
 
 <script>
+  const THEME_KEY = 'foviq-theme';
+
+  function getStoredTheme(): 'light' | 'dark' | null {
+    try {
+      const value = localStorage.getItem(THEME_KEY);
+      return value === 'light' || value === 'dark' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function currentTheme(): 'light' | 'dark' {
+    const stored = getStoredTheme();
+    if (stored) return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme: 'light' | 'dark' | null) {
+    if (theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
+  applyTheme(getStoredTheme());
+
+  const toggleBtn = document.getElementById('theme-toggle');
+  toggleBtn?.setAttribute('aria-pressed', String(currentTheme() === 'dark'));
+
+  toggleBtn?.addEventListener('click', () => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      /* ignore - private browsing / storage disabled */
+    }
+    applyTheme(next);
+    toggleBtn.setAttribute('aria-pressed', String(next === 'dark'));
+    toggleBtn.setAttribute('aria-label', next === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+  });
+
   async function loadAuth() {
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include' });
       const data = await res.json();
       const navAuth = document.getElementById('nav-auth');
+      if (!navAuth) return;
 
       if (data.user) {
         navAuth.innerHTML = `
           <div class="user-menu">
             <span class="user-email">${data.user.email}</span>
-            <a href="/dashboard" class="btn btn-primary">Dashboard</a>
-            <button id="logout-btn" class="btn btn-secondary btn-logout">Logout</button>
+            <a href="/dashboard" class="btn btn-primary btn-sm">Dashboard</a>
+            <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
           </div>
         `;
         document.getElementById('logout-btn')?.addEventListener('click', async () => {
@@ -63,109 +124,136 @@ const currentPath = normalize(Astro.url.pathname);
 
 <style>
   .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 2rem;
+    gap: 1.5rem;
+    padding: 0.875rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .nav-auth { display: flex; gap: 0.75rem; }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .logo img {
+    border-radius: var(--radius-sm);
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .nav-auth {
+    display: flex;
+    gap: 0.625rem;
+  }
 
   .tools-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.25rem;
+    gap: 1.75rem;
   }
 
   .tools-link {
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-  }
-
-  .tools-link:hover { opacity: 1; }
-  .tools-link.active { opacity: 1; font-weight: 700; }
-
-  .btn {
-    padding: 0.5rem 1.25rem;
-    border-radius: 8px;
-    font-weight: 500;
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: all 0.2s;
-  }
-
-  .user-menu { display: flex; align-items: center; gap: 1rem; }
-
-  /* hero theme: white text/buttons on a dark gradient header (homepage) */
-  .nav-bar[data-theme='hero'] .logo {
-    color: white;
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .nav-bar[data-theme='hero'] .tools-link { color: white; }
-  .nav-bar[data-theme='hero'] .btn-primary { background: white; color: var(--brand-500); }
-  .nav-bar[data-theme='hero'] .btn-primary:hover { background: var(--gray-100); }
-  .nav-bar[data-theme='hero'] .btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-  }
-  .nav-bar[data-theme='hero'] .btn-secondary:hover { background: rgba(255, 255, 255, 0.3); }
-  .nav-bar[data-theme='hero'] .user-email { color: rgba(255, 255, 255, 0.8); font-size: 0.875rem; }
-  .nav-bar[data-theme='hero'] .btn-logout {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.875rem;
-  }
-  .nav-bar[data-theme='hero'] .btn-logout:hover { background: rgba(255, 255, 255, 0.3); }
-
-  /* light theme: dark text on a white header (diff checker, other tool pages) */
-  .nav-bar[data-theme='light'] .logo {
-    color: var(--color-text);
-    font-size: 1.25rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .nav-bar[data-theme='light'] .tools-link { color: var(--color-text-secondary); }
-  .nav-bar[data-theme='light'] .btn-primary { background: var(--brand-500); color: white; }
-  .nav-bar[data-theme='light'] .btn-primary:hover { background: var(--brand-600); }
-  .nav-bar[data-theme='light'] .btn-secondary {
-    background: var(--gray-100);
+    position: relative;
     color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.25rem 0;
+    transition: color var(--transition-base);
+  }
+
+  .tools-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--brand-500);
+    border-radius: var(--radius-full);
+    transform: scaleX(0);
+    transition: transform var(--transition-base);
+  }
+
+  .tools-link:hover { color: var(--color-text); }
+  .tools-link:hover::after { transform: scaleX(0.6); }
+  .tools-link.active { color: var(--color-text); font-weight: 600; }
+  .tools-link.active::after { transform: scaleX(1); }
+
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--control-h-sm);
+    height: var(--control-h-sm);
+    border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
   }
-  .nav-bar[data-theme='light'] .btn-secondary:hover { background: var(--color-border); }
-  .nav-bar[data-theme='light'] .user-email { color: var(--color-text-muted); font-size: 0.875rem; }
-  .nav-bar[data-theme='light'] .btn-logout {
-    background: var(--color-danger-bg);
-    color: var(--color-danger);
-    border: 1px solid var(--color-danger-border);
+
+  .theme-toggle:hover {
+    background: var(--color-surface-hover);
+    color: var(--color-text);
   }
-  .nav-bar[data-theme='light'] .btn-logout:hover { background: var(--color-danger-bg); }
+
+  .theme-toggle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .theme-toggle .icon-moon { display: block; }
+  .theme-toggle .icon-sun { display: none; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .theme-toggle .icon-moon { display: none; }
+    :root:not([data-theme='light']) .theme-toggle .icon-sun { display: block; }
+  }
+
+  :root[data-theme='dark'] .theme-toggle .icon-moon { display: none; }
+  :root[data-theme='dark'] .theme-toggle .icon-sun { display: block; }
+
+  .user-menu { display: flex; align-items: center; gap: 0.875rem; }
+  .user-email { color: var(--color-text-muted); font-size: 0.8125rem; }
 
   @media (max-width: 1024px) {
     .nav-bar {
       flex-wrap: wrap;
       row-gap: 0.75rem;
-      padding: 1rem 1.5rem;
+      padding: 0.875rem 1.5rem;
     }
     .tools-links { order: 3; flex-basis: 100%; justify-content: center; }
   }
 
   @media (max-width: 768px) {
-    .nav-bar { flex-direction: column; align-items: stretch; gap: 1rem; }
-    .tools-links { order: initial; flex-basis: auto; justify-content: flex-start; }
+    .nav-bar { flex-direction: column; align-items: stretch; gap: 0.875rem; }
+    .nav-right { justify-content: center; }
+    .tools-links { order: initial; flex-basis: auto; justify-content: center; }
     .nav-auth { justify-content: center; flex-wrap: wrap; }
   }
 </style>

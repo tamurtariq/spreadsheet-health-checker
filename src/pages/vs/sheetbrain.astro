@@ -1,12 +1,16 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ToolsNav from '../../components/ToolsNav.astro';
+import '../../styles/components.css';
 ---
 
 <Layout title="Spreadsheet Health Checker vs SheetBrain">
   <main class="main" id="main-content">
+    <ToolsNav />
     <header class="compare-header">
       <div class="compare-header-content">
-        <h1>Spreadsheet Health Checker <span class="vs">vs</span> SheetBrain</h1>
+        <p class="eyebrow">Comparison</p>
+        <h1>Spreadsheet Health Checker <span class="badge" data-tone="brand">vs</span> SheetBrain</h1>
         <p class="tagline">Why teams switch from SheetBrain to our privacy-first, client-side spreadsheet validator</p>
       </div>
     </header>
@@ -70,37 +74,37 @@ import Layout from '../../layouts/Layout.astro';
       <h2>Detailed Comparison</h2>
 
       <div class="comparison-grid">
-        <article class="comparison-card">
+        <article class="comparison-card card">
           <h3><span aria-hidden="true">🔒</span> Privacy & Security</h3>
           <p><strong>Spreadsheet Health Checker:</strong> All processing happens in your browser. Your spreadsheets never touch our servers. No data upload, no cloud processing, no retention.</p>
           <p><strong>SheetBrain:</strong> Requires uploading files to their cloud infrastructure for analysis. Data passes through their servers.</p>
         </article>
 
-        <article class="comparison-card">
+        <article class="comparison-card card">
           <h3><span aria-hidden="true">⚡</span> Performance</h3>
           <p><strong>Spreadsheet Health Checker:</strong> Web Workers for CSV (Papa Parse), optimized SheetJS for Excel. 50 MB files process in seconds. No network latency.</p>
           <p><strong>SheetBrain:</strong> Limited by upload speed and server queue times. 10 MB cap restricts larger workbooks.</p>
         </article>
 
-        <article class="comparison-card">
+        <article class="comparison-card card">
           <h3><span aria-hidden="true">🔍</span> Detection Depth</h3>
           <p><strong>Spreadsheet Health Checker:</strong> 30+ checks across formulas, data quality, and structure. Circular reference detection with full chain display. Inconsistent formula detection across rows.</p>
           <p><strong>SheetBrain:</strong> Focuses primarily on formula errors. Limited data quality and structural checks.</p>
         </article>
 
-        <article class="comparison-card">
+        <article class="comparison-card card">
           <h3><span aria-hidden="true">📊</span> Reporting & Export</h3>
           <p><strong>Spreadsheet Health Checker:</strong> Interactive HTML report with severity filters, search, CSV export, PDF export (Pro). 0-100 health score with letter grade.</p>
           <p><strong>SheetBrain:</strong> Basic report view. Limited export options.</p>
         </article>
 
-        <article class="comparison-card">
+        <article class="comparison-card card">
           <h3>🔄 Diff Checker</h3>
           <p><strong>Spreadsheet Health Checker (Pro/Team):</strong> Compare two versions cell-by-cell. Four change types: added, removed, changed, formula-changed. Filterable, exportable.</p>
           <p><strong>SheetBrain:</strong> No version comparison feature.</p>
         </article>
 
-        <article class="comparison-card">
+        <article class="comparison-card card">
           <h3>💰 Value</h3>
           <p><strong>Spreadsheet Health Checker:</strong> Free tier (3 scans/mo), Pro $9/mo unlimited, Team $29/mo (5 seats). 40% cheaper than SheetBrain.</p>
           <p><strong>SheetBrain:</strong> Starts at $15/mo. No free tier.</p>
@@ -111,39 +115,47 @@ import Layout from '../../layouts/Layout.astro';
     <section class="cta-section">
       <h2>Ready to Switch?</h2>
       <p>Join teams who value privacy, performance, and comprehensive validation.</p>
-      <a href="/login" class="cta-btn">Start Free Analysis</a>
+      <a href="/spreadsheet-health-checker" class="btn btn-primary btn-lg">Start Free Analysis</a>
     </section>
   </main>
 
   <style>
     .main { min-height: 100vh; }
-    
+
     .compare-header {
-      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
-      color: white;
-      padding: 4rem 2rem;
+      padding: var(--space-16) var(--space-8) var(--space-10);
       text-align: center;
     }
-    
-    .compare-header-content { max-width: 800px; margin: 0 auto; }
-    .compare-header h1 { font-size: 2.5rem; margin: 0 0 1rem; }
-    .compare-header .vs { background: rgba(255,255,255,0.2); padding: 0 1rem; border-radius: 8px; }
-    .tagline { font-size: 1.125rem; opacity: 0.9; margin: 0; }
-    
+
+    .compare-header-content { max-width: 760px; margin: 0 auto; }
+
+    .eyebrow {
+      margin: 0 0 var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-500);
+    }
+
+    .compare-header h1 { font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 var(--space-4); color: var(--color-text); }
+    .compare-header .badge { vertical-align: middle; text-transform: uppercase; }
+    .tagline { font-size: var(--text-lg); color: var(--color-text-muted); margin: 0; line-height: 1.6; }
+
     .quick-comparison {
-      padding: 3rem 2rem;
+      padding: var(--space-8) var(--space-8) var(--space-4);
       max-width: 1200px;
       margin: 0 auto;
       overflow-x: auto;
     }
-    
+
     .comparison-table {
       background: var(--color-surface);
       border: 1px solid var(--color-border);
-      border-radius: 12px;
+      border-radius: var(--radius-xl);
       overflow: hidden;
     }
-    
+
     .table-header {
       display: grid;
       grid-template-columns: 250px 1fr 1fr;
@@ -151,71 +163,53 @@ import Layout from '../../layouts/Layout.astro';
       color: white;
       font-weight: 600;
     }
-    
-    .col { padding: 1rem 1.5rem; border-bottom: 1px solid var(--color-border); }
+
+    .col { padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--color-border); }
     .table-header .col { border-bottom: none; }
-    
+
     .table-row { display: grid; grid-template-columns: 250px 1fr 1fr; }
     .table-row:nth-child(even) .col { background: var(--color-bg-subtle); }
-    
+
     .col.feature { font-weight: 500; color: var(--color-text-secondary); background: var(--color-bg-subtle); }
-    .col.us.highlight { background: var(--color-success-bg); }
+    .table-header .col.us.highlight { background: var(--color-success-bg-strong); color: var(--color-success-text); }
     .col.us strong { color: var(--color-success-text); }
-    
+
     .detailed-comparison {
       max-width: 1000px;
-      margin: 0 auto 4rem;
-      padding: 0 2rem;
+      margin: 0 auto var(--space-16);
+      padding: 0 var(--space-8);
     }
-    
-    .detailed-comparison h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); }
-    
+
+    .detailed-comparison h2 { font-size: var(--text-2xl); margin-bottom: var(--space-8); color: var(--color-text); }
+
     .comparison-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
+      gap: var(--space-5);
     }
-    
-    .comparison-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-    }
-    
-    .comparison-card h3 { margin: 0 0 1rem; font-size: 1.125rem; color: var(--color-text); }
-    .comparison-card p { margin: 0.75rem 0; color: var(--color-text-secondary); line-height: 1.6; font-size: 0.9375rem; }
+
+    .comparison-card { padding: var(--space-6); }
+
+    .comparison-card h3 { margin: 0 0 var(--space-4); font-size: var(--text-lg); color: var(--color-text); }
+    .comparison-card p { margin: var(--space-3) 0; color: var(--color-text-secondary); line-height: 1.6; font-size: var(--text-sm); }
     .comparison-card strong { color: var(--color-text); }
-    
+
     .cta-section {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: var(--space-16) var(--space-8);
       background: var(--color-bg-subtle);
       border-top: 1px solid var(--color-border);
     }
-    
-    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: var(--color-text); }
-    .cta-section p { color: var(--color-text-muted); margin: 0 0 2rem; font-size: 1.125rem; }
-    
-    .cta-btn {
-      display: inline-block;
-      padding: 1rem 2.5rem;
-      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
-      color: white;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1.125rem;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
-    
+
+    .cta-section h2 { font-size: var(--text-3xl); margin: 0 0 var(--space-3); color: var(--color-text); }
+    .cta-section p { color: var(--color-text-muted); margin: 0 0 var(--space-8); font-size: var(--text-lg); }
+
     @media (max-width: 768px) {
-      .compare-header h1 { font-size: 1.75rem; }
+      .compare-header h1 { font-size: var(--text-2xl); }
       .table-header, .table-row { grid-template-columns: 1fr; }
       .col { border-right: none; }
       .col.feature { border-bottom: none; }
-      .detailed-comparison { padding: 0 1rem; }
+      .detailed-comparison { padding: 0 var(--space-4); }
       .comparison-grid { grid-template-columns: 1fr; }
     }
   </style>

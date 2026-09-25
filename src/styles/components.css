@@ -479,13 +479,16 @@
 }
 
 .finding-card {
-  border-radius: 8px;
-  padding: 1.25rem;
-  transition: box-shadow 0.2s;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 }
 
 .finding-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-sm);
 }
 
 .finding-header {
@@ -538,8 +541,8 @@
 }
 
 .finding-content {
-  border-top: 1px solid rgba(0,0,0,0.05);
-  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-3);
 }
 
 .finding-description {
@@ -550,9 +553,9 @@
 
 .finding-suggestion {
   margin: 0;
-  padding: 0.75rem;
-  background: rgba(0,0,0,0.02);
-  border-radius: 6px;
+  padding: var(--space-3);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-md);
   font-size: 0.875rem;
   color: var(--color-text-secondary);
   line-height: 1.5;
@@ -794,43 +797,188 @@
 }
 
 /*
- * Generic button classes. dashboard.astro's "Create Key" and "Invite
- * Member" buttons already used class="btn btn-primary btn-sm" with no
- * matching CSS anywhere in the project - they were rendering unstyled.
- * ToolsNav.astro/index.astro/diff/index.astro each define their own
- * theme-dependent .btn-primary/.btn-secondary scoped to their own file;
- * this is the plain, light-background variant for pages like the
- * dashboard that don't need a hero/dark variant.
+ * Canonical button system, shared by every page and component in the app
+ * (ToolsNav, home, tool pages, dashboard, login, blog, /vs, 404, and every
+ * React island). One system instead of each file defining its own
+ * .btn-primary/.btn-secondary keeps the whole site visually consistent -
+ * see the "modern-frontend-ui" restyle pass. Four variants (primary /
+ * secondary / ghost / danger) x three sizes (sm / md [default] / lg).
  */
 .btn {
-  padding: 0.5rem 1.25rem;
-  border-radius: 8px;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: var(--control-h-md);
+  padding: 0 1.125rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid transparent;
+  font-weight: 600;
   text-decoration: none;
-  font-size: 0.875rem;
-  border: none;
+  font-size: var(--text-sm);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background var(--transition-base), border-color var(--transition-base),
+    color var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  height: var(--control-h-sm);
+  padding: 0 0.875rem;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-md);
+}
+
+.btn-lg {
+  height: var(--control-h-lg);
+  padding: 0 1.5rem;
+  font-size: var(--text-base);
 }
 
 .btn-primary {
   background: var(--brand-500);
   color: white;
+  box-shadow: var(--shadow-sm);
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: var(--brand-600);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background: var(--gray-100);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
-  border: 1px solid var(--color-border);
+  border-color: var(--color-border);
 }
 
-.btn-secondary:hover {
-  background: var(--color-border);
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-strong);
 }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.btn-danger {
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: white;
+}
+
+/* Solid-fill danger, for destructive confirmations (dashboard's confirm
+   modal) that need a heavier visual weight than the default outline. */
+.btn-danger-solid {
+  background: var(--color-danger);
+  color: white;
+}
+
+.btn-danger-solid:hover:not(:disabled) {
+  background: var(--color-danger-strong);
+}
+
+/* Hero theme: white-on-gradient buttons for a dark/brand-gradient header
+   (e.g. the flagship tool's hero). Scope with data-theme="hero" on an
+   ancestor rather than duplicating the whole .btn system per page. */
+[data-theme='hero'] .btn-primary {
+  background: white;
+  color: var(--brand-600);
+  box-shadow: var(--shadow-md);
+}
+
+[data-theme='hero'] .btn-primary:hover:not(:disabled) {
+  background: var(--gray-100);
+  box-shadow: var(--shadow-lg);
+}
+
+[data-theme='hero'] .btn-secondary {
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='hero'] .btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+[data-theme='hero'] .btn-ghost {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme='hero'] .btn-ghost:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+}
+
+/*
+ * Card primitive - the other big source of visual inconsistency pre-revamp
+ * (dashboard's .card, blog's .blog-card, /vs's .comparison-card, the old
+ * homepage's .feature were four near-identical, slightly different
+ * definitions). Subtle border + soft shadow over a heavy drop-shadow, per
+ * the "restraint over decoration" design principle.
+ */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover,
+a.card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/*
+ * Badge/tag primitive - tier badges, blog tags, diff-type pills, etc. all
+ * used a bespoke pill before this. `data-tone` picks the semantic color
+ * family; omit it for a neutral badge.
+ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  background: var(--gray-100);
+  color: var(--color-text-secondary);
+}
+
+.badge[data-tone='brand'] { background: var(--brand-tag-bg); color: var(--brand-tag-text); }
+.badge[data-tone='success'] { background: var(--color-success-bg-strong); color: var(--color-success-text); }
+.badge[data-tone='warning'] { background: var(--color-warning-bg-strong); color: var(--color-warning-text); }
+.badge[data-tone='info'] { background: var(--color-info-bg-strong); color: var(--color-info-text); }
 
 /*
  * Shared modal, used both by React (UpgradeModal.tsx) and vanilla-JS pages

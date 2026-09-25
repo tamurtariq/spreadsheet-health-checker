@@ -1,0 +1,167 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Analyzer from '../components/Analyzer.tsx';
+import ToolsNav from '../components/ToolsNav.astro';
+import '../styles/components.css';
+
+const description = 'Analyze uploaded spreadsheets for formula errors, data-quality issues, and structural problems - 100% client-side, zero data upload.';
+---
+
+<Layout title="Spreadsheet Health Checker - FOVIQ Tools" description={description}>
+  <main class="main" id="main-content">
+    <header class="tool-header">
+      <ToolsNav />
+      <div class="tool-intro">
+        <p class="eyebrow">Free spreadsheet tool</p>
+        <h1>Spreadsheet Health Checker</h1>
+        <p class="tagline">{description}</p>
+        <div class="hero-badges">
+          <span class="badge" data-tone="brand">Privacy first</span>
+          <span class="badge" data-tone="brand">Instant results</span>
+          <span class="badge" data-tone="brand">CSV &amp; Excel</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="analyzer-section" id="analyzer">
+      <Analyzer client:load />
+    </div>
+
+    <section class="features">
+      <div class="feature card">
+        <div class="feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+        </div>
+        <h3>Formula validation</h3>
+        <p>Detects #REF!, #DIV/0!, #VALUE!, circular references, inconsistent formulas, and volatile functions.</p>
+      </div>
+      <div class="feature card">
+        <div class="feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 11H3v10h6zM21 3h-6v18h6zM15 7H9v14h6z" /></svg>
+        </div>
+        <h3>Data quality checks</h3>
+        <p>Identifies mixed types, numbers stored as text, duplicate keys, whitespace anomalies, and blank clusters.</p>
+      </div>
+      <div class="feature card">
+        <div class="feature-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>
+        </div>
+        <h3>Structure analysis</h3>
+        <p>Finds hidden rows/columns with data, oversized sheets, trailing empty rows/columns, and sparse data.</p>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .main {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tool-header {
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-bg-subtle);
+    }
+
+    .tool-intro {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-8) var(--space-12);
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-500);
+    }
+
+    .tool-intro h1 {
+      margin: 0 0 var(--space-4);
+      font-size: var(--text-4xl);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--color-text);
+    }
+
+    .tagline {
+      margin: 0 auto var(--space-6);
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      max-width: 560px;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: var(--space-2);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .analyzer-section {
+      flex: 1;
+      padding: var(--space-10) var(--space-8);
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      scroll-margin-top: 5rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: var(--space-6);
+      padding: var(--space-4) var(--space-8) var(--space-16);
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .feature {
+      padding: var(--space-8);
+      text-align: left;
+    }
+
+    .feature-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      margin-bottom: var(--space-4);
+      border-radius: var(--radius-lg);
+      background: var(--brand-tag-bg);
+      color: var(--brand-500);
+    }
+
+    .feature-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .feature h3 {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin: 0 0 var(--space-2);
+      color: var(--color-text);
+    }
+
+    .feature p {
+      margin: 0;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .tool-intro { padding: var(--space-8) var(--space-4) var(--space-8); }
+      .tool-intro h1 { font-size: var(--text-3xl); }
+      .analyzer-section { padding: var(--space-6) var(--space-4); }
+      .features { padding: var(--space-4) var(--space-4) var(--space-10); }
+    }
+  </style>
+</Layout>

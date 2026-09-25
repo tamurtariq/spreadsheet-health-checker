@@ -1,50 +1,87 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Analyzer from '../components/Analyzer.tsx';
 import ToolsNav from '../components/ToolsNav.astro';
+import '../styles/components.css';
+
+const TOOLS = [
+  {
+    href: '/spreadsheet-health-checker',
+    name: 'Spreadsheet Health Checker',
+    description: 'Scan CSV/XLSX files for formula errors, data-quality issues, and structural problems, and get a scored health report.',
+    tag: 'Free',
+    icon: 'M9 11H3v10h6zM21 3h-6v18h6zM15 7H9v14h6z',
+  },
+  {
+    href: '/diff',
+    name: 'Diff Checker',
+    description: 'Compare two spreadsheet versions cell-by-cell, including formula changes, and see exactly what moved.',
+    tag: 'Pro',
+    icon: 'M17 3v18M7 3v18M3 8h4M3 16h4M17 8h4M17 16h4',
+  },
+  {
+    href: '/lead-csv-cleaner',
+    name: 'Lead CSV Cleaner',
+    description: 'Validate, normalize, and deduplicate lead lists so they import cleanly into your CRM.',
+    tag: 'Free',
+    icon: 'M20 6 9 17l-5-5',
+  },
+];
+
+const TRUST = [
+  { title: 'Client-side by design', body: 'Files are processed in your browser. Nothing is uploaded to a server.' },
+  { title: 'Instant results', body: 'No queues, no processing wait — analysis runs the moment you drop a file.' },
+  { title: 'Works with your files', body: 'Native support for CSV and Excel (.xlsx) workbooks, no conversion needed.' },
+];
 ---
 
-<Layout title="FOVIQ Tools">
+<Layout title="FOVIQ Tools — Practical tools for your spreadsheets">
   <meta name="google-site-verification" content="lzgnJVpNBXxPeYzWCCJxUccV_8Znnw_Zry14PDS_jvg" slot="head" />
   <main class="main" id="main-content">
+    <ToolsNav />
+
     <header class="hero">
-      <ToolsNav theme="hero" />
-      <div class="hero-content">
-        <h1>Spreadsheet Health Checker</h1>
-        <p class="tagline">Validate your spreadsheets for formula errors, data quality issues, and structural problems — 100% client-side, zero data upload.</p>
-        <div class="hero-badges">
-          <span class="badge"><span aria-hidden="true">🔒</span> Privacy First</span>
-          <span class="badge"><span aria-hidden="true">⚡</span> Instant Results</span>
-          <span class="badge"><span aria-hidden="true">📊</span> CSV & Excel</span>
-        </div>
-        <div class="hero-cta">
-          <a href="#analyzer" class="btn btn-primary btn-large">
-            Try It Free
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
-          </a>
-        </div>
+      <p class="eyebrow">FOVIQ Tools</p>
+      <h1>Practical, privacy-first tools for your spreadsheets</h1>
+      <p class="tagline">Clean, validate, and compare your data — entirely in your browser. No uploads, no waiting, no signup required to start.</p>
+      <div class="hero-cta">
+        <a href="/spreadsheet-health-checker" class="btn btn-primary btn-lg">
+          Try Health Checker Free
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+        </a>
+        <a href="/blog" class="btn btn-secondary btn-lg">Read the blog</a>
       </div>
     </header>
 
-    <div class="analyzer-section" id="analyzer">
-      <Analyzer client:load />
-    </div>
+    <section class="tools-section" aria-labelledby="tools-heading">
+      <h2 id="tools-heading">Tools</h2>
+      <div class="tools-grid">
+        {TOOLS.map(tool => (
+          <a href={tool.href} class="tool-card card card-interactive">
+            <div class="tool-card-top">
+              <span class="tool-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d={tool.icon} /></svg>
+              </span>
+              <span class="badge" data-tone={tool.tag === 'Pro' ? 'warning' : 'success'}>{tool.tag}</span>
+            </div>
+            <h3>{tool.name}</h3>
+            <p>{tool.description}</p>
+            <span class="tool-card-link">Open tool
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
 
-    <section class="features">
-      <div class="feature">
-        <div class="feature-icon" aria-hidden="true">🔍</div>
-        <h3>Formula Validation</h3>
-        <p>Detects #REF!, #DIV/0!, #VALUE!, circular references, inconsistent formulas, and volatile functions.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon" aria-hidden="true">📋</div>
-        <h3>Data Quality Checks</h3>
-        <p>Identifies mixed types, numbers stored as text, duplicate keys, whitespace anomalies, and blank clusters.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon" aria-hidden="true">🏗️</div>
-        <h3>Structure Analysis</h3>
-        <p>Finds hidden rows/columns with data, oversized sheets, trailing empty rows/columns, and sparse data.</p>
+    <section class="trust-section" aria-labelledby="trust-heading">
+      <h2 id="trust-heading" class="sr-only">Why FOVIQ Tools</h2>
+      <div class="trust-grid">
+        {TRUST.map(item => (
+          <div class="trust-item">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
       </div>
     </section>
   </main>
@@ -55,151 +92,174 @@ import ToolsNav from '../components/ToolsNav.astro';
       display: flex;
       flex-direction: column;
     }
-    
+
     .hero {
-      padding: 3rem 2rem 2.5rem;
-      text-align: center;
-      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
-      color: white;
-    }
-    
-    .hero-content {
-      max-width: 800px;
+      max-width: 720px;
       margin: 0 auto;
+      padding: var(--space-16) var(--space-8) var(--space-12);
+      text-align: center;
     }
-    
+
+    .eyebrow {
+      margin: 0 0 var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-500);
+    }
+
     .hero h1 {
-      font-size: 3rem;
+      margin: 0 0 var(--space-5);
+      font-size: var(--text-5xl);
       font-weight: 800;
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: var(--color-text);
     }
-    
+
     .tagline {
-      font-size: 1.25rem;
-      opacity: 0.9;
-      max-width: 600px;
-      margin: 0 auto 2rem;
+      margin: 0 auto var(--space-8);
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
       line-height: 1.6;
+      max-width: 540px;
     }
-    
-    .hero-badges {
+
+    .hero-cta {
       display: flex;
-      gap: 0.75rem;
+      gap: var(--space-3);
       justify-content: center;
       flex-wrap: wrap;
     }
-    
-    .badge {
-      background: rgba(255,255,255,0.2);
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      font-size: 0.875rem;
-      backdrop-filter: blur(4px);
+
+    .hero-cta svg {
+      width: 18px;
+      height: 18px;
     }
-    
-    .features {
+
+    .tools-section {
+      max-width: 1080px;
+      margin: 0 auto;
+      width: 100%;
+      padding: var(--space-8) var(--space-8) var(--space-4);
+    }
+
+    .tools-section h2 {
+      margin: 0 0 var(--space-6);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-faint);
+    }
+
+    .tools-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      padding: 4rem 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      width: 100%;
+      gap: var(--space-5);
     }
-    
-    .feature {
-      padding: 2rem;
-      background: var(--color-surface);
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: transform 0.2s, box-shadow 0.2s;
+
+    .tool-card {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-6);
+      text-decoration: none;
+      color: inherit;
     }
-    
-    .feature:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+
+    .tool-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
     }
-    
-    .feature-icon {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    .feature h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--color-text);
-    }
-    
-    .feature p {
-      color: var(--color-text-muted);
-      line-height: 1.6;
-    }
-    
-    .analyzer-section {
-      flex: 1;
-      padding: 2rem;
-      max-width: 1000px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    
-    .btn {
+
+    .tool-icon {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1.25rem;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-lg);
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 0.875rem;
-      transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
-    }
-
-    .btn:active {
-      transform: translateY(0) scale(0.97);
-    }
-
-    .btn-primary {
-      background: var(--color-surface);
+      background: var(--brand-tag-bg);
       color: var(--brand-500);
-      box-shadow: var(--shadow-md);
-    }
-    .btn-primary:hover {
-      background: var(--gray-100);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
     }
 
-    .btn-large {
-      padding: 1rem 2.25rem;
-      font-size: 1.125rem;
-    }
-
-    .btn-large svg {
+    .tool-icon svg {
       width: 20px;
       height: 20px;
-      animation: bounce-down 2s ease-in-out infinite;
     }
 
-    @keyframes bounce-down {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(3px); }
+    .tool-card h3 {
+      margin: 0 0 var(--space-2);
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
     }
 
-    .hero-cta { margin-top: 1.75rem; }
+    .tool-card p {
+      margin: 0;
+      flex: 1;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      font-size: var(--text-sm);
+    }
 
-    .analyzer-section { max-width: 800px; scroll-margin-top: 1.5rem; }
+    .tool-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-5);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--brand-500);
+    }
+
+    .tool-card-link svg {
+      width: 16px;
+      height: 16px;
+      transition: transform var(--transition-base);
+    }
+
+    .tool-card:hover .tool-card-link svg {
+      transform: translateX(3px);
+    }
+
+    .trust-section {
+      max-width: 1080px;
+      margin: 0 auto;
+      width: 100%;
+      padding: var(--space-12) var(--space-8) var(--space-16);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-8);
+      padding-top: var(--space-10);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .trust-item h3 {
+      margin: 0 0 var(--space-2);
+      font-size: var(--text-base);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .trust-item p {
+      margin: 0;
+      color: var(--color-text-muted);
+      line-height: 1.6;
+      font-size: var(--text-sm);
+    }
 
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2rem; }
-      .tagline { font-size: 1rem; }
-      .features { grid-template-columns: 1fr; }
-      .hero-cta { margin-top: 1rem; }
+      .hero { padding: var(--space-12) var(--space-4) var(--space-8); }
+      .hero h1 { font-size: var(--text-3xl); }
+      .tagline { font-size: var(--text-base); }
+      .tools-section, .trust-section { padding-left: var(--space-4); padding-right: var(--space-4); }
     }
   </style>
 </Layout>

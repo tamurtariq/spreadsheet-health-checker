@@ -1,12 +1,16 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ToolsNav from '../../components/ToolsNav.astro';
+import '../../styles/components.css';
 ---
 
 <Layout title="Spreadsheet Health Checker vs Manual Review">
   <main class="main" id="main-content">
+    <ToolsNav />
     <header class="compare-header">
       <div class="compare-header-content">
-        <h1>Spreadsheet Health Checker <span class="vs">vs</span> Manual Review</h1>
+        <p class="eyebrow">Comparison</p>
+        <h1>Spreadsheet Health Checker <span class="badge" data-tone="brand">vs</span> Manual Review</h1>
         <p class="tagline">Why automated validation beats hours of eyeballing cells — every time</p>
       </div>
     </header>
@@ -14,32 +18,32 @@ import Layout from '../../layouts/Layout.astro';
     <section class="problem-section">
       <h2>The Problem with Manual Review</h2>
       <div class="problem-grid">
-        <article class="problem-card">
+        <article class="problem-card card">
           <div class="problem-icon" aria-hidden="true">⏱️</div>
           <h3>Time Consuming</h3>
           <p>A 10,000-row spreadsheet takes <strong>4-8 hours</strong> to review manually. Our tool does it in <strong>under 10 seconds</strong>.</p>
         </article>
-        <article class="problem-card">
+        <article class="problem-card card">
           <div class="problem-icon" aria-hidden="true">👁️</div>
           <h3>Human Error</h3>
           <p>Studies show reviewers miss <strong>30-50%</strong> of formula errors. Fatigue sets in after 30 minutes.</p>
         </article>
-        <article class="problem-card">
+        <article class="problem-card card">
           <div class="problem-icon" aria-hidden="true">🔍</div>
           <h3>Invisible Errors</h3>
           <p>Hidden rows, white-on-white text, and off-screen columns are easily missed. Automated tools check every cell.</p>
         </article>
-        <article class="problem-card">
+        <article class="problem-card card">
           <div class="problem-icon" aria-hidden="true">🔄</div>
           <h3>No Regression Testing</h3>
           <p>After fixes, manual re-review is rarely done. Automated checks run every time — catching regressions instantly.</p>
         </article>
-        <article class="problem-card">
+        <article class="problem-card card">
           <div class="problem-icon" aria-hidden="true">📋</div>
           <h3>Inconsistent Standards</h3>
           <p>Different reviewers check different things. Our 30+ checks run the same way every time.</p>
         </article>
-        <article class="problem-card">
+        <article class="problem-card card">
           <div class="problem-icon" aria-hidden="true">📊</div>
           <h3>No Audit Trail</h3>
           <p>Manual reviews leave no evidence. Our reports export to CSV/PDF for compliance and audit trails.</p>
@@ -50,7 +54,7 @@ import Layout from '../../layouts/Layout.astro';
     <section class="roi-section">
       <h2>ROI Calculator</h2>
       <div class="roi-grid">
-        <div class="roi-card">
+        <div class="roi-card card">
           <h3>Manual Review Cost</h3>
           <ul>
             <li>Senior analyst: $75/hr</li>
@@ -59,7 +63,7 @@ import Layout from '../../layouts/Layout.astro';
             <li>Monthly = <strong>$5,400</strong></li>
           </ul>
         </div>
-        <div class="roi-card highlight">
+        <div class="roi-card card highlight">
           <h3>Automated Cost</h3>
           <ul>
             <li>Pro plan: $9/mo</li>
@@ -74,7 +78,7 @@ import Layout from '../../layouts/Layout.astro';
     <section class="what-you-miss">
       <h2>What Manual Review Misses (That We Catch)</h2>
       <div class="miss-grid">
-        <div class="miss-category">
+        <div class="miss-category card">
           <h3>Formula Errors</h3>
           <ul>
             <li>Circular references (entire chains)</li>
@@ -84,7 +88,7 @@ import Layout from '../../layouts/Layout.astro';
             <li>All error types: #REF!, #DIV/0!, #VALUE!, #NAME?, #N/A, #NUM!, #NULL!, #CALC!, #SPILL!</li>
           </ul>
         </div>
-        <div class="miss-category">
+        <div class="miss-category card">
           <h3>Data Quality</h3>
           <ul>
             <li>Mixed types in single columns</li>
@@ -94,7 +98,7 @@ import Layout from '../../layouts/Layout.astro';
             <li>Blank row/column clusters</li>
           </ul>
         </div>
-        <div class="miss-category">
+        <div class="miss-category card">
           <h3>Structure</h3>
           <ul>
             <li>Hidden rows/columns with data</li>
@@ -110,7 +114,7 @@ import Layout from '../../layouts/Layout.astro';
     <section class="workflow-section">
       <h2>Workflow Comparison</h2>
       <div class="workflow-comparison">
-        <div class="workflow-column">
+        <div class="workflow-column card">
           <h3>Manual Review Process</h3>
           <ol>
             <li>Open workbook, scan tabs</li>
@@ -125,7 +129,7 @@ import Layout from '../../layouts/Layout.astro';
           </ol>
           <div class="time-badge">4-8 hours</div>
         </div>
-        <div class="workflow-column highlight">
+        <div class="workflow-column card highlight">
           <h3>Spreadsheet Health Checker</h3>
           <ol>
             <li>Drag & drop file</li>
@@ -143,182 +147,156 @@ import Layout from '../../layouts/Layout.astro';
     <section class="cta-section">
       <h2>Stop Eyeballing. Start Validating.</h2>
       <p>Free tier: 3 scans/month. Pro: $9/mo unlimited.</p>
-      <a href="/login" class="cta-btn">Try Free Analysis</a>
+      <a href="/spreadsheet-health-checker" class="btn btn-primary btn-lg">Try Free Analysis</a>
     </section>
   </main>
 
   <style>
     .main { min-height: 100vh; }
-    
+
     .compare-header {
-      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
-      color: white;
-      padding: 4rem 2rem;
+      padding: var(--space-16) var(--space-8) var(--space-10);
       text-align: center;
     }
-    
-    .compare-header-content { max-width: 800px; margin: 0 auto; }
-    .compare-header h1 { font-size: 2.5rem; margin: 0 0 1rem; }
-    .compare-header .vs { background: rgba(255,255,255,0.2); padding: 0 1rem; border-radius: 8px; }
-    .tagline { font-size: 1.125rem; opacity: 0.9; margin: 0; }
-    
+
+    .compare-header-content { max-width: 760px; margin: 0 auto; }
+
+    .eyebrow {
+      margin: 0 0 var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-500);
+    }
+
+    .compare-header h1 { font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 var(--space-4); color: var(--color-text); }
+    .compare-header .badge { vertical-align: middle; text-transform: uppercase; }
+    .tagline { font-size: var(--text-lg); color: var(--color-text-muted); margin: 0; line-height: 1.6; }
+
     .problem-section {
       max-width: 1000px;
       margin: 0 auto;
-      padding: 3rem 2rem;
+      padding: var(--space-8) var(--space-8) var(--space-4);
     }
-    
-    .problem-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
-    
+
+    .problem-section h2 { font-size: var(--text-2xl); margin-bottom: var(--space-8); color: var(--color-text); text-align: center; }
+
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      gap: var(--space-5);
     }
-    
-    .problem-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
-    }
-    
-    .problem-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .problem-card h3 { margin: 0 0 0.75rem; font-size: 1.125rem; color: var(--color-text); }
+
+    .problem-card { padding: var(--space-6); text-align: center; }
+
+    .problem-icon { font-size: 2.25rem; margin-bottom: var(--space-3); }
+    .problem-card h3 { margin: 0 0 var(--space-2); font-size: var(--text-lg); color: var(--color-text); }
     .problem-card p { margin: 0; color: var(--color-text-secondary); line-height: 1.6; }
     .problem-card strong { color: var(--color-danger); }
-    
+
     .roi-section {
       max-width: 1000px;
-      margin: 0 auto 4rem;
-      padding: 0 2rem;
+      margin: 0 auto var(--space-16);
+      padding: var(--space-4) var(--space-8);
     }
-    
-    .roi-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
-    
+
+    .roi-section h2 { font-size: var(--text-2xl); margin-bottom: var(--space-8); color: var(--color-text); text-align: center; }
+
     .roi-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+      gap: var(--space-5);
     }
-    
-    .roi-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-    
+
+    .roi-card { padding: var(--space-8); }
+
     .roi-card.highlight {
       border-color: var(--brand-500);
       background: var(--brand-bg-subtle);
     }
-    
-    .roi-card h3 { margin: 0 0 1rem; font-size: 1.25rem; color: var(--color-text); }
+
+    .roi-card h3 { margin: 0 0 var(--space-4); font-size: var(--text-xl); color: var(--color-text); }
     .roi-card ul { margin: 0; padding-left: 1.25rem; }
     .roi-card li { margin: 0.5rem 0; color: var(--color-text-secondary); }
-    .roi-card strong { color: var(--color-text); font-size: 1.125rem; }
-    
+    .roi-card strong { color: var(--color-text); font-size: var(--text-lg); }
+
     .what-you-miss {
       max-width: 1000px;
-      margin: 0 auto 4rem;
-      padding: 0 2rem;
+      margin: 0 auto var(--space-16);
+      padding: var(--space-4) var(--space-8);
     }
-    
-    .what-you-miss h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
-    
+
+    .what-you-miss h2 { font-size: var(--text-2xl); margin-bottom: var(--space-8); color: var(--color-text); text-align: center; }
+
     .miss-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      gap: var(--space-5);
     }
-    
-    .miss-category {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-    }
-    
-    .miss-category h3 { margin: 0 0 1rem; font-size: 1.125rem; color: var(--color-text); padding-bottom: 0.75rem; border-bottom: 1px solid var(--color-border); }
+
+    .miss-category { padding: var(--space-6); }
+
+    .miss-category h3 { margin: 0 0 var(--space-4); font-size: var(--text-lg); color: var(--color-text); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
     .miss-category ul { margin: 0; padding-left: 1.25rem; }
-    .miss-category li { margin: 0.375rem 0; color: var(--color-text-secondary); font-size: 0.9375rem; }
-    
+    .miss-category li { margin: 0.375rem 0; color: var(--color-text-secondary); font-size: var(--text-sm); }
+
     .workflow-section {
       max-width: 1000px;
-      margin: 0 auto 4rem;
-      padding: 0 2rem;
+      margin: 0 auto var(--space-16);
+      padding: var(--space-4) var(--space-8);
     }
-    
-    .workflow-section h2 { font-size: 1.75rem; margin-bottom: 2rem; color: var(--color-text); text-align: center; }
-    
+
+    .workflow-section h2 { font-size: var(--text-2xl); margin-bottom: var(--space-8); color: var(--color-text); text-align: center; }
+
     .workflow-comparison {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      gap: var(--space-6);
     }
-    
-    .workflow-column {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 2rem;
-    }
-    
+
+    .workflow-column { padding: var(--space-8); }
+
     .workflow-column.highlight {
       border-color: var(--brand-500);
       background: var(--brand-bg-subtle);
     }
-    
-    .workflow-column h3 { margin: 0 0 1.5rem; font-size: 1.25rem; color: var(--color-text); }
+
+    .workflow-column h3 { margin: 0 0 var(--space-5); font-size: var(--text-xl); color: var(--color-text); }
     .workflow-column ol { margin: 0; padding-left: 1.25rem; }
     .workflow-column li { margin: 0.75rem 0; color: var(--color-text-secondary); line-height: 1.5; }
-    
+
     .time-badge {
       display: inline-block;
-      margin-top: 1.5rem;
-      padding: 0.75rem 1.5rem;
+      margin-top: var(--space-5);
+      padding: 0.625rem var(--space-5);
       background: var(--gray-100);
       color: var(--color-text-secondary);
-      border-radius: 9999px;
+      border-radius: var(--radius-full);
       font-weight: 600;
-      font-size: 1.125rem;
+      font-size: var(--text-lg);
     }
-    
+
     .workflow-column.highlight .time-badge {
       background: var(--brand-500);
       color: white;
     }
-    
+
     .cta-section {
       text-align: center;
-      padding: 4rem 2rem;
+      padding: var(--space-16) var(--space-8);
       background: var(--color-bg-subtle);
       border-top: 1px solid var(--color-border);
     }
-    
-    .cta-section h2 { font-size: 2rem; margin: 0 0 1rem; color: var(--color-text); }
-    .cta-section p { color: var(--color-text-muted); margin: 0 0 2rem; font-size: 1.125rem; }
-    
-    .cta-btn {
-      display: inline-block;
-      padding: 1rem 2.5rem;
-      background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
-      color: white;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 1.125rem;
-      text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
-    
+
+    .cta-section h2 { font-size: var(--text-3xl); margin: 0 0 var(--space-3); color: var(--color-text); }
+    .cta-section p { color: var(--color-text-muted); margin: 0 0 var(--space-8); font-size: var(--text-lg); }
+
     @media (max-width: 768px) {
-      .compare-header h1 { font-size: 1.75rem; }
+      .compare-header h1 { font-size: var(--text-2xl); }
       .roi-grid { grid-template-columns: 1fr; }
       .workflow-comparison { grid-template-columns: 1fr; }
-      .problem-section, .roi-section, .what-you-miss, .workflow-section { padding: 0 1rem; }
+      .problem-section, .roi-section, .what-you-miss, .workflow-section { padding-left: var(--space-4); padding-right: var(--space-4); }
     }
   </style>
 </Layout>

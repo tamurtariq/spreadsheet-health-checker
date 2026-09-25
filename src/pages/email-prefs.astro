@@ -1,11 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import '../styles/components.css';
 ---
 
 <Layout title="Email Preferences - FOVIQ Tools">
   <main class="main" id="main-content">
-    <header class="dashboard-header">
+    <header class="dashboard-header" data-theme="hero">
       <div class="header-content">
+        <a href="/dashboard" class="logo">
+          <img src="/favicon.svg" alt="" width="24" height="24" />
+          <span>FOVIQ Tools</span>
+        </a>
         <h1>Email Preferences</h1>
       </div>
     </header>
@@ -132,34 +137,54 @@ import Layout from "../layouts/Layout.astro";
 
   <style>
     .main { min-height: 100vh; }
-    
+
     .dashboard-header {
       background: var(--gray-900);
       color: white;
-      padding: 1.5rem 2rem;
+      padding: var(--space-6) var(--space-8);
     }
-    
-    .header-content { max-width: 800px; margin: 0 auto; }
-    .dashboard-header h1 { margin: 0; font-size: 1.5rem; }
-    
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: white;
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .logo img { border-radius: var(--radius-sm); }
+
+    .dashboard-header h1 {
+      margin: 0;
+      padding-left: var(--space-4);
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: var(--text-xl);
+      font-weight: 700;
+    }
+
     .dashboard-grid {
       max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
+      margin: var(--space-8) auto;
+      padding: 0 var(--space-6);
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: var(--space-6);
     }
-    
-    .card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      padding: 1.5rem;
-    }
-    
-    .card h2 { margin: 0 0 0.5rem; font-size: 1.125rem; color: var(--color-text); }
-    .card > p { color: var(--color-text-muted); margin-bottom: 1.5rem; }
+
+    .card { padding: var(--space-6); }
+
+    .card h2 { margin: 0 0 var(--space-2); font-size: var(--text-lg); color: var(--color-text); }
+    .card > p { color: var(--color-text-muted); margin-bottom: var(--space-6); }
     
     .preference-item { margin-bottom: 1.5rem; }
     .preference-item:last-child { margin-bottom: 0; }
@@ -225,36 +250,19 @@ import Layout from "../layouts/Layout.astro";
       accent-color: var(--brand-500);
     }
     
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 0.875rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-    }
-    
-    .btn-secondary {
-      background: var(--gray-100);
-      color: var(--color-text-secondary);
-      border: 1px solid var(--color-border);
-    }
-    .btn-secondary:hover:not(:disabled) { background: var(--color-border); }
-    .btn-secondary:disabled { opacity: 0.6; cursor: not-allowed; }
-    
     .test-result {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      font-size: 14px;
+      margin-top: var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
     }
     .test-result.success { background: var(--color-success-bg); color: var(--color-success-text); border: 1px solid var(--color-success-border); }
     .test-result.error { background: var(--color-danger-bg); color: var(--color-danger-text); border: 1px solid var(--color-danger-border); }
     .test-result.hidden { display: none; }
-    
+
     @media (max-width: 768px) {
-      .dashboard-header { text-align: center; }
+      .header-content { flex-direction: column; text-align: center; }
+      .dashboard-header h1 { padding-left: 0; border-left: none; }
     }
   </style>
 </Layout>

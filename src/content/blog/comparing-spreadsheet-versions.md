@@ -63,4 +63,4 @@ Our **Diff Checker** (Pro/Team feature) provides:
 3. **Document intent** - Add comments when making structural changes
 4. **Archive versions** - Keep monthly snapshots
 
-Try the Diff Checker free at [Spreadsheet Health Checker](/dashboard) (Pro feature).
+Try the [Diff Checker](/diff) (Pro feature) from [FOVIQ Tools](/).

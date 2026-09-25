@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ToolsNav from '../../components/ToolsNav.astro';
+import '../../styles/components.css';
 
 const posts = await getCollection('blog', ({ data }) => {
   return data.pubDate <= new Date();
@@ -11,109 +13,111 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
 
 <Layout title="Blog - FOVIQ Tools">
   <main class="main" id="main-content">
+    <ToolsNav />
     <header class="blog-header">
       <div class="blog-header-content">
+        <p class="eyebrow">Blog</p>
         <h1>Spreadsheet Health Checker Blog</h1>
-        <p>Tips, guides, and best practices for spreadsheet validation, data quality, and error prevention.</p>
+        <p class="lede">Tips, guides, and best practices for spreadsheet validation, data quality, and error prevention.</p>
       </div>
     </header>
 
     <section class="blog-grid">
       {sortedPosts.map(post => (
-        <article class="blog-card">
-          <div class="blog-card-content">
-            <div class="blog-meta">
-              <time>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
-              <span class="tags">{post.data.tags.join(' · ')}</span>
-            </div>
-            <h2><a href={`/blog/${post.slug}`}>{post.data.title}</a></h2>
-            <p>{post.data.description}</p>
-            <a href={`/blog/${post.slug}`} class="read-more">Read more →</a>
+        <article class="blog-card card card-interactive">
+          <div class="blog-meta">
+            <time>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</time>
+            <span class="tags">{post.data.tags.join(' · ')}</span>
           </div>
+          <h2><a href={`/blog/${post.slug}`}>{post.data.title}</a></h2>
+          <p>{post.data.description}</p>
+          <a href={`/blog/${post.slug}`} class="read-more">Read more
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+          </a>
         </article>
       ))}
     </section>
 
     <footer class="blog-footer">
-      <p>Want to validate your spreadsheets? <a href="/dashboard">Try Spreadsheet Health Checker free</a>.</p>
+      <p>Want to validate your spreadsheets? <a href="/spreadsheet-health-checker">Try Spreadsheet Health Checker free</a>.</p>
     </footer>
   </main>
 
   <style>
     .main { min-height: 100vh; }
-    
+
     .blog-header {
-      background: var(--color-bg-subtle);
-      padding: 4rem 2rem;
+      padding: var(--space-16) var(--space-8) var(--space-10);
       text-align: center;
-      border-bottom: 1px solid var(--color-border);
     }
-    
-    .blog-header-content { max-width: 800px; margin: 0 auto; }
-    .blog-header h1 { font-size: 2.5rem; margin: 0 0 1rem; color: var(--color-text); }
-    .blog-header p { font-size: 1.125rem; color: var(--color-text-muted); margin: 0; }
-    
+
+    .blog-header-content { max-width: 640px; margin: 0 auto; }
+
+    .eyebrow {
+      margin: 0 0 var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--brand-500);
+    }
+
+    .blog-header h1 { font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 var(--space-3); color: var(--color-text); }
+    .blog-header .lede { font-size: var(--text-lg); color: var(--color-text-muted); margin: 0; line-height: 1.6; }
+
     .blog-grid {
-      max-width: 900px;
-      margin: 3rem auto;
-      padding: 0 1.5rem;
+      max-width: 800px;
+      margin: 0 auto var(--space-16);
+      padding: 0 var(--space-6);
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: var(--space-5);
     }
-    
-    .blog-card {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: box-shadow 0.2s, transform 0.2s;
-    }
-    
-    .blog-card:hover {
-      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-      transform: translateY(-2px);
-    }
-    
-    .blog-card-content { padding: 1.5rem; }
-    
+
+    .blog-card { padding: var(--space-6); }
+
     .blog-meta {
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
-      font-size: 0.875rem;
+      gap: var(--space-4);
+      font-size: var(--text-sm);
       color: var(--color-text-faint);
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--space-3);
     }
-    
+
     .blog-meta time { font-weight: 500; color: var(--color-text-muted); }
     .tags { color: var(--brand-500); }
-    
-    .blog-card h2 { margin: 0 0 0.75rem; font-size: 1.375rem; line-height: 1.3; }
+
+    .blog-card h2 { margin: 0 0 var(--space-3); font-size: var(--text-xl); line-height: 1.3; font-weight: 700; }
     .blog-card h2 a { color: var(--color-text); text-decoration: none; }
     .blog-card h2 a:hover { color: var(--brand-500); }
-    
-    .blog-card p { margin: 0 0 1rem; color: var(--color-text-secondary); line-height: 1.6; }
-    
+
+    .blog-card p { margin: 0 0 var(--space-4); color: var(--color-text-secondary); line-height: 1.6; }
+
     .read-more {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
       color: var(--brand-500);
-      font-weight: 500;
+      font-weight: 600;
+      font-size: var(--text-sm);
       text-decoration: none;
     }
-    .read-more:hover { text-decoration: underline; }
-    
+    .read-more svg { width: 16px; height: 16px; transition: transform var(--transition-base); }
+    .blog-card:hover .read-more svg { transform: translateX(3px); }
+
     .blog-footer {
       text-align: center;
-      padding: 3rem 2rem;
+      padding: var(--space-12) var(--space-8);
       color: var(--color-text-muted);
+      border-top: 1px solid var(--color-border);
     }
-    .blog-footer a { color: var(--brand-500); font-weight: 500; }
-    
+    .blog-footer a { color: var(--brand-500); font-weight: 600; }
+
     @media (max-width: 768px) {
-      .blog-header { padding: 2rem 1rem; }
-      .blog-header h1 { font-size: 1.75rem; }
-      .blog-grid { gap: 1.5rem; }
+      .blog-header { padding: var(--space-10) var(--space-4) var(--space-8); }
+      .blog-header h1 { font-size: var(--text-3xl); }
+      .blog-grid { gap: var(--space-4); }
     }
   </style>
 </Layout>
