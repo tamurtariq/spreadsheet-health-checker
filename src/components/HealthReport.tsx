@@ -77,8 +77,7 @@ function FindingCard({ finding }: { finding: Finding }) {
     <div
       className="finding-card"
       style={{
-        borderLeft: `4px solid ${colors.border}`,
-        backgroundColor: colors.bg,
+        borderLeft: `3px solid ${colors.border}`,
       }}
     >
       <button

@@ -1,18 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ToolsNav from '../components/ToolsNav.astro';
+import '../styles/components.css';
 ---
 
 <Layout title="Page Not Found - FOVIQ Tools" description="The page you're looking for doesn't exist.">
   <main class="main" id="main-content">
-    <ToolsNav theme="light" />
+    <ToolsNav />
     <div class="not-found">
       <p class="code">404</p>
       <h1>Page not found</h1>
       <p>The page you're looking for doesn't exist or may have moved.</p>
       <div class="actions">
-        <a href="/" class="btn btn-primary">Go to Homepage</a>
-        <a href="/dashboard" class="btn btn-secondary">Go to Dashboard</a>
+        <a href="/" class="btn btn-primary btn-lg">Go to Homepage</a>
+        <a href="/dashboard" class="btn btn-secondary btn-lg">Go to Dashboard</a>
       </div>
     </div>
   </main>
@@ -61,32 +62,6 @@ import ToolsNav from '../components/ToolsNav.astro';
       gap: var(--space-3);
       flex-wrap: wrap;
       justify-content: center;
-    }
-
-    .btn {
-      padding: var(--space-2) var(--space-5);
-      border-radius: var(--radius-lg);
-      font-weight: 500;
-      text-decoration: none;
-      font-size: var(--text-sm);
-      transition: all var(--transition-base);
-    }
-
-    .btn-primary {
-      background: var(--brand-500);
-      color: white;
-    }
-    .btn-primary:hover {
-      background: var(--brand-600);
-    }
-
-    .btn-secondary {
-      background: var(--color-bg-subtle);
-      color: var(--color-text-secondary);
-      border: 1px solid var(--color-border);
-    }
-    .btn-secondary:hover {
-      background: var(--color-border);
     }
   </style>
 </Layout>

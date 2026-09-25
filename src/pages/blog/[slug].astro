@@ -1,27 +1,38 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ToolsNav from '../../components/ToolsNav.astro';
+import '../../styles/components.css';
 
-export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+// This project renders in `output: "server"` mode (see CLAUDE.md), where
+// getStaticPaths() is ignored for dynamic routes - it only wires up
+// Astro.props on prerendered/static routes. Look the post up directly from
+// the request's slug param instead of relying on getStaticPaths' props,
+// which were silently undefined at request time and 500'd every post.
+// Entries come from the `glob()` content-layer loader (src/content.config.ts),
+// which keys collections by `.id` (the slugified filename) - there is no
+// `.slug` field, so matching against it here (and linking with it from
+// blog/index.astro) always resolved to `undefined`.
+const { slug } = Astro.params;
+const posts = await getCollection('blog');
+const post = posts.find(p => p.id === slug);
+
+if (!post) {
+  return Astro.rewrite('/404');
 }
 
-const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title}>
+  <ToolsNav />
   <article class="main" id="main-content">
     <header class="post-header">
       <div class="post-meta">
         <time>{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
         {post.data.updatedDate && <span>Updated {post.data.updatedDate.toLocaleDateString()}</span>}
         <div class="tags">
-          {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+          {post.data.tags.map(tag => <span class="badge" data-tone="brand">{tag}</span>)}
         </div>
       </div>
       <h1>{post.data.title}</h1>
@@ -34,7 +45,7 @@ const { Content } = await post.render();
 
     <footer class="post-footer">
       <hr />
-      <p>Ready to validate your spreadsheets? <a href="/dashboard">Try Spreadsheet Health Checker free</a>.</p>
+      <p>Ready to validate your spreadsheets? <a href="/spreadsheet-health-checker">Try Spreadsheet Health Checker free</a>.</p>
       <p><a href="/blog">← Back to Blog</a></p>
     </footer>
   </article>
@@ -53,15 +64,7 @@ const { Content } = await post.render();
     }
     .post-meta time { font-weight: 500; color: var(--color-text-muted); }
     .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .tag {
-      background: var(--brand-tag-bg);
-      color: var(--brand-tag-text);
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    
+
     h1 { font-size: 2.5rem; line-height: 1.2; margin: 0 0 1rem; color: var(--color-text); }
     .post-description { font-size: 1.25rem; color: var(--color-text-muted); margin: 0; }
     

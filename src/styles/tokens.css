@@ -127,6 +127,12 @@
   --transition-base: 0.2s ease;
   --transition-slow: 0.3s ease;
 
+  /* Control heights - shared by the .btn system and form inputs so every
+     page uses the same three sizes instead of ad hoc padding. */
+  --control-h-sm: 32px;
+  --control-h-md: 36px;
+  --control-h-lg: 44px;
+
   color-scheme: light;
 }
 

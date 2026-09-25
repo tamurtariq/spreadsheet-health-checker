@@ -46,7 +46,7 @@ Modern tools like **Spreadsheet Health Checker** can:
 
 ## Getting Started
 
-Upload your spreadsheet to [Spreadsheet Health Checker](/dashboard) for a free health report. The tool runs 100% client-side — your data never leaves your browser.
+Upload your spreadsheet to [Spreadsheet Health Checker](/spreadsheet-health-checker) for a free health report. The tool runs 100% client-side — your data never leaves your browser.
 
 ---
 
