@@ -1,19 +1,27 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import ToolsNav from '../../components/ToolsNav.astro';
 import '../../styles/components.css';
 
-export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+// This project renders in `output: "server"` mode (see CLAUDE.md), where
+// getStaticPaths() is ignored for dynamic routes - it only wires up
+// Astro.props on prerendered/static routes. Look the post up directly from
+// the request's slug param instead of relying on getStaticPaths' props,
+// which were silently undefined at request time and 500'd every post.
+// Entries come from the `glob()` content-layer loader (src/content.config.ts),
+// which keys collections by `.id` (the slugified filename) - there is no
+// `.slug` field, so matching against it here (and linking with it from
+// blog/index.astro) always resolved to `undefined`.
+const { slug } = Astro.params;
+const posts = await getCollection('blog');
+const post = posts.find(p => p.id === slug);
+
+if (!post) {
+  return Astro.rewrite('/404');
 }
 
-const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title}>
