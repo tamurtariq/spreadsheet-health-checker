@@ -1,0 +1,223 @@
+/*
+ * Design tokens. Single source of truth for color, spacing, radius, shadow,
+ * type, and motion values used across every .astro/.tsx file. Nothing here
+ * renders anything on its own - it only defines CSS custom properties that
+ * base.css, components.css, and every page/component style block consume.
+ *
+ * Dark mode: --color-* tokens are semantic (bg/surface/text/border/status)
+ * rather than raw hex, and are re-pointed under prefers-color-scheme: dark
+ * and [data-theme="dark"] below. Anything styled with var(--color-*) gets
+ * dark mode automatically; anything styled with a literal hex value won't.
+ */
+
+:root {
+  /* Brand */
+  --brand-500: #667eea;
+  --brand-600: #5a6fd6;
+  --brand-700: #764ba2;
+  --brand-gradient: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
+  --brand-focus-ring: rgba(102, 126, 234, 0.35);
+  --brand-bg-subtle: #f0f4ff;
+
+  /* Neutral scale (source values - prefer the semantic --color-* tokens below) */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #1f2937;
+  --white: #ffffff;
+
+  /* Semantic surfaces/text - light mode defaults, re-pointed for dark below */
+  --color-bg: var(--white);
+  --color-bg-subtle: var(--gray-50);
+  --color-surface: var(--white);
+  --color-surface-hover: var(--gray-50);
+  --color-border: var(--gray-200);
+  --color-border-strong: var(--gray-300);
+  --color-text: var(--gray-900);
+  --color-text-secondary: var(--gray-700);
+  --color-text-muted: var(--gray-500);
+  --color-text-faint: var(--gray-400);
+  --color-overlay: rgba(17, 24, 39, 0.5);
+
+  /* Status: success / danger / warning / high(orange) / info, each with
+     bg + border + text so a component picks all three from one family. */
+  --color-success: #22c55e;
+  --color-success-strong: #16a34a;
+  --color-success-bg: #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-success-text: #166534;
+
+  --color-danger: #ef4444;
+  --color-danger-strong: #dc2626;
+  --color-danger-bg: #fef2f2;
+  --color-danger-border: #fecaca;
+  --color-danger-text: #991b1b;
+
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text: #92400e;
+
+  --color-high: #f97316;
+  --color-high-bg: #fff7ed;
+  --color-high-border: #fed7aa;
+  --color-high-text: #9a3412;
+
+  --color-info: #3b82f6;
+  --color-info-bg: #eff6ff;
+  --color-info-border: #bfdbfe;
+  --color-info-text: #1e40af;
+
+  /* "-bg-strong" variants: more saturated fills for badges/pills/gradients,
+     as distinct from the softer "-bg" used for notice boxes and cards. */
+  --color-success-bg-strong: #dcfce7;
+  --color-warning-bg-strong: #fef3c7;
+  --color-info-bg-strong: #dbeafe;
+  --brand-tag-bg: #eef2ff;
+  --brand-tag-text: #3730a3;
+
+  /* Spacing scale (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-focus: 0 0 0 3px var(--brand-focus-ring);
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+    monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+
+  /* Motion (neutralized globally under prefers-reduced-motion in base.css) */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #0f1115;
+    --color-bg-subtle: #161922;
+    --color-surface: #1a1e28;
+    --color-surface-hover: #21273354;
+    --color-border: #2a2f3c;
+    --color-border-strong: #3a4152;
+    --color-text: #f3f4f6;
+    --color-text-secondary: #d1d5db;
+    --color-text-muted: #9ca3af;
+    --color-text-faint: #6b7280;
+    --color-overlay: rgba(0, 0, 0, 0.65);
+
+    --color-success-bg: rgba(34, 197, 94, 0.12);
+    --color-success-border: rgba(34, 197, 94, 0.35);
+    --color-success-text: #4ade80;
+
+    --color-danger-bg: rgba(239, 68, 68, 0.14);
+    --color-danger-border: rgba(239, 68, 68, 0.4);
+    --color-danger-text: #f87171;
+
+    --color-warning-bg: rgba(245, 158, 11, 0.14);
+    --color-warning-border: rgba(245, 158, 11, 0.4);
+    --color-warning-text: #fbbf24;
+
+    --color-high-bg: rgba(249, 115, 22, 0.14);
+    --color-high-border: rgba(249, 115, 22, 0.4);
+    --color-high-text: #fb923c;
+
+    --color-info-bg: rgba(59, 130, 246, 0.14);
+    --color-info-border: rgba(59, 130, 246, 0.4);
+    --color-info-text: #93c5fd;
+
+    --color-success-bg-strong: rgba(34, 197, 94, 0.22);
+    --color-warning-bg-strong: rgba(245, 158, 11, 0.22);
+    --color-info-bg-strong: rgba(59, 130, 246, 0.22);
+    --brand-tag-bg: rgba(102, 126, 234, 0.18);
+    --brand-tag-text: #a5b4fc;
+
+    --brand-bg-subtle: rgba(102, 126, 234, 0.14);
+
+    color-scheme: dark;
+  }
+}
+
+/* Manual override hook for a future theme toggle - not wired to any UI yet,
+   but any component built against --color-* tokens already supports it. */
+:root[data-theme='dark'] {
+  --color-bg: #0f1115;
+  --color-bg-subtle: #161922;
+  --color-surface: #1a1e28;
+  --color-surface-hover: #21273354;
+  --color-border: #2a2f3c;
+  --color-border-strong: #3a4152;
+  --color-text: #f3f4f6;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
+  --color-text-faint: #6b7280;
+  --color-overlay: rgba(0, 0, 0, 0.65);
+
+  --color-success-bg: rgba(34, 197, 94, 0.12);
+  --color-success-border: rgba(34, 197, 94, 0.35);
+  --color-success-text: #4ade80;
+
+  --color-danger-bg: rgba(239, 68, 68, 0.14);
+  --color-danger-border: rgba(239, 68, 68, 0.4);
+  --color-danger-text: #f87171;
+
+  --color-warning-bg: rgba(245, 158, 11, 0.14);
+  --color-warning-border: rgba(245, 158, 11, 0.4);
+  --color-warning-text: #fbbf24;
+
+  --color-high-bg: rgba(249, 115, 22, 0.14);
+  --color-high-border: rgba(249, 115, 22, 0.4);
+  --color-high-text: #fb923c;
+
+  --color-info-bg: rgba(59, 130, 246, 0.14);
+  --color-info-border: rgba(59, 130, 246, 0.4);
+  --color-info-text: #93c5fd;
+
+  --color-success-bg-strong: rgba(34, 197, 94, 0.22);
+  --color-warning-bg-strong: rgba(245, 158, 11, 0.22);
+  --color-info-bg-strong: rgba(59, 130, 246, 0.22);
+  --brand-tag-bg: rgba(102, 126, 234, 0.18);
+  --brand-tag-text: #a5b4fc;
+
+  --brand-bg-subtle: rgba(102, 126, 234, 0.14);
+
+  color-scheme: dark;
+}

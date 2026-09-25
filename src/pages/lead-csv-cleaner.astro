@@ -5,7 +5,7 @@ import LeadCleaner from '../components/LeadCleaner.tsx';
 ---
 
 <Layout title="Lead CSV Cleaner - FOVIQ Tools">
-  <main class="main">
+  <main class="main" id="main-content">
     <header class="tool-header">
       <ToolsNav theme="light" />
       <div class="tool-intro">
@@ -23,8 +23,8 @@ import LeadCleaner from '../components/LeadCleaner.tsx';
     .main { min-height: 100vh; display: flex; flex-direction: column; }
 
     .tool-header {
-      border-bottom: 1px solid #e5e7eb;
-      background: white;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
     }
 
     .tool-intro {
@@ -37,13 +37,13 @@ import LeadCleaner from '../components/LeadCleaner.tsx';
       margin: 0 0 0.5rem;
       font-size: 1.75rem;
       font-weight: 700;
-      color: #1f2937;
+      color: var(--color-text);
     }
 
     .tagline {
       margin: 0;
       font-size: 1rem;
-      color: #6b7280;
+      color: var(--color-text-muted);
       max-width: 640px;
     }
 

@@ -5,7 +5,7 @@ import ToolsNav from '../../components/ToolsNav.astro';
 ---
 
 <Layout title="Diff Checker - FOVIQ Tools">
-  <main class="main">
+  <main class="main" id="main-content">
     <header class="diff-header">
       <ToolsNav theme="light" />
     </header>
@@ -19,8 +19,8 @@ import ToolsNav from '../../components/ToolsNav.astro';
     .main { min-height: 100vh; display: flex; flex-direction: column; }
 
     .diff-header {
-      border-bottom: 1px solid #e5e7eb;
-      background: white;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
     }
 
     .diff-page {

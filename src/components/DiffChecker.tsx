@@ -145,14 +145,21 @@ export default function DiffChecker() {
 
       <div className="file-inputs">
         <div className="file-input-group">
-          <label htmlFor="file1">Original Version</label>
-          <div className={`file-drop ${file1 ? 'has-file' : ''}`} onClick={() => document.getElementById('file1')?.click()}>
+          <label htmlFor="file1" id="file1-label">Original Version</label>
+          <div
+            className={`file-drop ${file1 ? 'has-file' : ''}`}
+            onClick={() => document.getElementById('file1')?.click()}
+            role="button"
+            tabIndex={0}
+            aria-labelledby="file1-label"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('file1')?.click(); } }}
+          >
             <input id="file1" type="file" accept=".csv,.xlsx,.xls" onChange={handleFile1Change} style={{ display: 'none' }} />
             {file1 ? (
               <div className="file-selected">
                 <span className="file-name">{file1.name}</span>
                 <span className="file-size">{(file1.size / 1024 / 1024).toFixed(2)} MB</span>
-                <button type="button" onClick={(e) => { e.stopPropagation(); setFile1(null); setParsed1(null); }} className="remove-file">✕</button>
+                <button type="button" onClick={(e) => { e.stopPropagation(); setFile1(null); setParsed1(null); }} className="remove-file" aria-label="Remove original version file">✕</button>
               </div>
             ) : (
               <div className="drop-prompt">Click or drag to upload original file</div>
@@ -170,14 +177,21 @@ export default function DiffChecker() {
         </div>
 
         <div className="file-input-group">
-          <label htmlFor="file2">New Version</label>
-          <div className={`file-drop ${file2 ? 'has-file' : ''}`} onClick={() => document.getElementById('file2')?.click()}>
+          <label htmlFor="file2" id="file2-label">New Version</label>
+          <div
+            className={`file-drop ${file2 ? 'has-file' : ''}`}
+            onClick={() => document.getElementById('file2')?.click()}
+            role="button"
+            tabIndex={0}
+            aria-labelledby="file2-label"
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); document.getElementById('file2')?.click(); } }}
+          >
             <input id="file2" type="file" accept=".csv,.xlsx,.xls" onChange={handleFile2Change} style={{ display: 'none' }} />
             {file2 ? (
               <div className="file-selected">
                 <span className="file-name">{file2.name}</span>
                 <span className="file-size">{(file2.size / 1024 / 1024).toFixed(2)} MB</span>
-                <button type="button" onClick={(e) => { e.stopPropagation(); setFile2(null); setParsed2(null); }} className="remove-file">✕</button>
+                <button type="button" onClick={(e) => { e.stopPropagation(); setFile2(null); setParsed2(null); }} className="remove-file" aria-label="Remove new version file">✕</button>
               </div>
             ) : (
               <div className="drop-prompt">Click or drag to upload new file</div>
@@ -262,7 +276,7 @@ export default function DiffChecker() {
               filteredDiffs.map((diff, index) => (
                 <div key={index} className={`diff-item ${diff.type}`}>
                   <div className="diff-cell">
-                    <span className="diff-type-badge {diff.type}">{diff.type}</span>
+                    <span className={`diff-type-badge diff-type-badge--${diff.type}`}>{diff.type.replace('-', ' ')}</span>
                     <span className="diff-location">{diff.sheet} • {formatDiffForDisplay(diff).split(':')[0]}</span>
                   </div>
                   <div className="diff-values">
