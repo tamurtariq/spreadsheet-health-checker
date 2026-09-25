@@ -50,19 +50,38 @@
 }
 
 .browse-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
+  min-height: 44px;
   background: var(--brand-500);
   color: white;
-  border-radius: 8px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: background var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .browse-btn:hover {
   background: var(--brand-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.browse-btn:active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: var(--shadow-sm);
+}
+
+/* The real <input type="file"> stays in the tab order (visually hidden via
+   .sr-only, not display:none) so keyboard users can reach it; forward its
+   focus-visible ring onto the label styled to look like the button. */
+#file-input:focus-visible ~ .drop-prompt .browse-btn {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
 }
 
 .file-selected {
@@ -101,18 +120,31 @@
 }
 
 .remove-file {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
   background: none;
   border: none;
-  padding: 0.5rem;
   color: var(--color-text-faint);
   cursor: pointer;
-  border-radius: 6px;
-  transition: all 0.2s;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+}
+
+.remove-file svg {
+  width: 18px;
+  height: 18px;
 }
 
 .remove-file:hover {
   background: var(--color-danger-bg);
   color: var(--color-danger);
+}
+
+.remove-file:active {
+  transform: scale(0.92);
 }
 
 .progress-bar {
@@ -178,6 +210,11 @@
 .analyze-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.analyze-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
 }
 
 .analyze-btn:disabled {
