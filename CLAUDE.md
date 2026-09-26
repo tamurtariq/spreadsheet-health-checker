@@ -37,8 +37,16 @@ Production URL: https://tools.foviq.com/
   sets `site` and runs `@astrojs/sitemap` with a `filter` excluding
   authenticated/utility pages (`/dashboard`, `/login`, `/email-prefs`,
   `/auth/verify`) from the generated `sitemap-index.xml`; `public/robots.txt`
-  points to it. Individual `/blog/[slug]` posts aren't in the sitemap since
-  Astro can't enumerate dynamic SSR routes without `prerender = true`.
+  points to it. `src/pages/sitemap.xml.ts` 301-redirects the conventional
+  `/sitemap.xml` path to it, since that's the literal filename crawlers
+  probe. Individual `/blog/[slug]` posts are plain SSR (not `prerender =
+  true` — see the comment in that file for why: `@astrojs/cloudflare`'s
+  build-time prerenderer needs a live remote KV/D1 connection and a
+  `CLOUDFLARE_API_TOKEN` neither `astro build` nor this repo's CI has), so
+  Astro can't enumerate them from the build manifest the way it does static
+  pages. They're listed in the sitemap via `customPages` in
+  `astro.config.mjs` instead, derived at build time from the filenames in
+  `src/content/blog/`.
 
 ### Astro component prop gotcha (caused a full site outage — see below)
 

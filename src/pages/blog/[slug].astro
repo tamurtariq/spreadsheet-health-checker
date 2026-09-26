@@ -9,6 +9,14 @@ import '../../styles/components.css';
 // Astro.props on prerendered/static routes. Look the post up directly from
 // the request's slug param instead of relying on getStaticPaths' props,
 // which were silently undefined at request time and 500'd every post.
+//
+// Individual posts are listed in the sitemap via `customPages` in
+// astro.config.mjs rather than by prerendering this route: setting
+// `prerender = true` here makes @astrojs/cloudflare's build-time
+// prerenderer spin up a real remote connection for the KV/D1 bindings
+// (`remote: true` in wrangler.jsonc), which needs a CLOUDFLARE_API_TOKEN
+// and fails in plain `astro build` without one.
+//
 // Entries come from the `glob()` content-layer loader (src/content.config.ts),
 // which keys collections by `.id` (the slugified filename) - there is no
 // `.slug` field, so matching against it here (and linking with it from
